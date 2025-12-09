@@ -1,0 +1,108 @@
+.pay-wrapper {
+  max-width: 600px;
+  margin: auto;
+  padding: 30px;
+  animation: fadeIn 0.4s ease;
+}
+
+.pay-heading {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.pay-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+.student-title {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.pay-row {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+.pay-method-title {
+  margin-top: 22px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.method-list {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.method-btn {
+  flex: 1;
+  padding: 12px;
+  margin: 0 5px;
+  border-radius: 12px;
+  border: 1px solid #dcdcdc;
+  background: #f6f6f6;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 600;
+}
+
+.method-btn.active {
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
+}
+
+.method-box {
+  margin-top: 15px;
+}
+
+.method-label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.input-box {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.card-row {
+  display: flex;
+  gap: 10px;
+}
+
+.final-pay-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 700;
+}
+
+.final-pay-btn:hover {
+  background: #16a34a;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

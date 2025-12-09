@@ -1,0 +1,40 @@
+/* Top transparent layer above the background but below the login box */
+.falling-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;  /* keeps it BEHIND the login box */
+}
+
+/* Falling word pieces */
+.falling-word {
+  position: absolute;
+  top: -50px;
+  font-size: 16px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  color: #0B3A99;
+  font-weight: 700;
+  white-space: nowrap;
+  animation-name: fallAnim;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Falling animation */
+@keyframes fallAnim {
+  0% {
+    top: -40px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    top: 110vh;
+    opacity: 0;
+  }
+}

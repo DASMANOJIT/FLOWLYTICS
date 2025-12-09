@@ -1,0 +1,513 @@
+/* =========================================
+   GLOBAL DASHBOARD STYLING (reduced padding)
+========================================= */
+
+.admin-dashboard {
+  padding: 12px; /* reduced from large padding */
+  max-width: 1200px;
+  margin: 16px auto;
+  font-family: "Inter", sans-serif;
+  transition: background-color 350ms ease, color 350ms ease; /* smooth fade for theme */
+  border-radius: 12px;
+  min-height: calc(100vh - 40px); /* let dark bg fill screen */
+  background-color: #f8fafc;
+  color: #0b1225;
+}
+
+/* DARK MODE (full-screen effect) */
+.admin-dashboard.dark {
+  background-color: #0b1020;
+  color: #e6eef8;
+}
+
+/* ensure internal cards animate when theme changes */
+.admin-dashboard .summary-box,
+.admin-dashboard .student-item,
+.admin-dashboard .calendar-box-custom,
+.admin-dashboard .chart-container,
+.admin-dashboard .month-switcher,
+.admin-dashboard .modern-search-wrapper {
+  transition: background-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
+}
+
+/* Card backgrounds in dark mode */
+.admin-dashboard.dark .summary-box,
+.admin-dashboard.dark .student-item,
+.admin-dashboard.dark .calendar-box-custom,
+.admin-dashboard.dark .chart-container,
+.admin-dashboard.dark .month-switcher {
+  background-color: #0f1724; /* deep card bg */
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+
+/* light card bg */
+.summary-box,
+.student-item,
+.calendar-box-custom,
+.chart-container,
+.month-switcher {
+  background-color: white;
+}
+
+/* =========================================
+   NAVBAR
+========================================= */
+.admin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1a56db;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: white;
+  position: relative;
+  z-index: 50;
+}
+
+/* Left title */
+.nav-left { display:flex; align-items:center; gap:12px; }
+.nav-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Right action group (keeps toggle to the right) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto; /* pushes it to the right */
+}
+
+/* Search toggle button (mobile) */
+.search-toggle-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: white;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 180ms ease, background 220ms ease;
+}
+.search-toggle-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,0.09); }
+
+/* Modern theme toggle — modern pill */
+.theme-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition: transform 200ms ease;
+}
+.theme-toggle:focus { outline: 2px solid rgba(255,255,255,0.12); }
+
+.theme-toggle .toggle-track {
+  width: 56px;
+  height: 30px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  box-sizing: border-box;
+}
+.theme-toggle .toggle-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  background: white;
+  color: #0b1225;
+  transition: transform 250ms cubic-bezier(.2,.9,.3,1);
+}
+.theme-toggle.active .toggle-thumb {
+  transform: translateX(26px);
+  background: #111827;
+  color: #f8fafc;
+}
+
+/* ====== Hamburger ====== */
+.hamburger {
+  display: none;
+  font-size: 22px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+/* ====== Navbar Links ====== */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: 12px;
+}
+.nav-links a { color: white; text-decoration: none; font-size: 0.98rem; }
+.logout-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  cursor: pointer;
+}
+.logout-btn:hover { background: #b91c1c; }
+
+/* Mobile Navbar */
+@media (max-width: 820px) {
+  .hamburger { display: block; }
+  .nav-links {
+    position: absolute;
+    top: 58px;
+    right: 10px;
+    width: 200px;
+    background: #1a56db;
+    flex-direction: column;
+    padding: 12px;
+    display: none;
+    border-radius: 8px;
+  }
+  .nav-links.open { display: flex; }
+}
+
+/* =========================================
+   SLIDING SEARCH (under navbar)
+   Desktop: visible; Mobile: hidden until button clicked
+========================================= */
+.sliding-search-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 300ms ease, opacity 300ms ease;
+  opacity: 0;
+  margin-bottom: 12px;
+}
+
+/* when open, show */
+.sliding-search-wrapper.open {
+  max-height: 120px; /* enough for the inner wrapper */
+  opacity: 1;
+}
+
+/* Desktop: show search always */
+@media (min-width: 821px) {
+  .sliding-search-wrapper { max-height: 120px; opacity: 1; }
+}
+
+/* Modern search wrapper */
+.modern-search-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* search input */
+.modern-search-bar {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(10,20,40,0.08);
+  font-size: 0.98rem;
+  box-shadow: 0 6px 18px rgba(9,30,66,0.04);
+  transition: transform 160ms ease, box-shadow 200ms ease, border-color 160ms ease;
+}
+
+/* hover / focus modern effect */
+.modern-search-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(9,30,66,0.06);
+}
+.modern-search-bar:focus {
+  outline: none;
+  border-color: #1a56db;
+  box-shadow: 0 14px 36px rgba(26,86,219,0.12);
+}
+
+/* search button */
+.modern-search-btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #1a56db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.modern-search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(26,86,219,0.18); }
+
+/* On small screens hide the search input by default; show only the toggle in navbar */
+@media (max-width: 820px) {
+  .sliding-search-wrapper { display: block; } /* This container appears when .open */
+  .modern-search-wrapper { width: calc(100% - 8px); margin: 0 4px; }
+}
+
+/* =========================================
+   SUMMARY CARDS
+========================================= */
+.monthly-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 15px;
+}
+
+.summary-box {
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+
+/* =========================================
+   CHART + CALENDAR ROW
+========================================= */
+.chart-calendar-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+/* Fake chart + calendar box styling (chart container) */
+.chart-container {
+  flex: 1;
+  background: transparent;
+  padding: 12px;
+  border-radius: 12px;
+}
+.chart-title { margin: 0 0 8px 0; }
+
+/* Calendar wrapper (keeps your existing calendar styles) */
+.calendar-wrapper-custom {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+/* Calendar dark adaptation */
+.admin-dashboard.dark .calendar-wrapper-custom { background: #07101a; }
+
+/* On Mobile → Stack them */
+@media (max-width: 820px) {
+  .chart-calendar-row { flex-direction: column; }
+  .chart-container { order: 2; }
+  .calendar-wrapper-custom { order: 1; }
+}
+
+/* =========================================
+   STUDENT LIST
+========================================= */
+.student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.student-item {
+  padding: 14px 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(3,18,53,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideUp 0.4s ease forwards;
+}
+
+/* Paid / Unpaid tags */
+.status-paid,
+.status-unpaid {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: white;
+  font-weight: 600;
+}
+
+.status-paid { background: #16a34a; }
+.status-unpaid { background: #dc2626; }
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =========================================
+   GLOBAL DARK MODE (FULL SCREEN)
+========================================= */
+
+.admin-dashboard.dark {
+  background: #0d0f1a !important;     /* full-screen dark */
+  color: #f5f5f5 !important;
+}
+
+/* Navbar */
+.admin-dashboard.dark .admin-nav {
+  background: #111423 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Search Bar + Button */
+.admin-dashboard.dark .modern-search-bar {
+  background: #1a1d2b !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.admin-dashboard.dark .modern-search-btn {
+  background: #22283a !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Dropdown Search Area */
+.admin-dashboard.dark .mobile-search-slide {
+  background: #111423 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+/* Summary Boxes */
+.admin-dashboard.dark .summary-box {
+  background: #1a1d2b !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 rgba(0,0,0,0) !important;
+}
+
+/* Chart Container */
+.admin-dashboard.dark .chart-container {
+  background: #1a1d2b !important;
+  color: #fff;
+  box-shadow: none !important;
+}
+
+/* Calendar Component */
+.admin-dashboard.dark .calendar-wrapper-custom {
+  background: #1a1d2b !important;
+  color: #fff;
+}
+
+.admin-dashboard.dark .calendar-box-custom {
+  background: #111423 !important;
+  box-shadow: none !important;
+}
+
+.admin-dashboard.dark .weekday {
+  background: #1f2333 !important;
+  color: #cbd5e1 !important;
+}
+
+.admin-dashboard.dark .calendar-day {
+  background: #1f2333 !important;
+  color: #fff !important;
+}
+
+/* Student List */
+.admin-dashboard.dark .student-item {
+  background: #1a1d2b !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.admin-dashboard.dark .status-paid {
+  background: #16a34a !important;
+  color: white !important;
+}
+
+.admin-dashboard.dark .status-unpaid {
+  background: #dc2626 !important;
+  color: white !important;
+}
+
+/* Navigation Links */
+.admin-dashboard.dark .nav-links a {
+  color: #fff !important;
+}
+
+.admin-dashboard.dark .logout-btn {
+  background: #dc2626 !important;
+  color: #fff !important;
+}
+
+/* Dark Mode Button */
+.theme-toggle {
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.admin-dashboard.dark .theme-toggle {
+  background: #ffffff22 !important;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.admin-dashboard.dark {
+  background: #0b0e17 !important;
+}
+
+
+body.dark-mode,
+html.dark-mode,
+#__next.dark-mode {
+  background: #0b0e17 !important;
+}
+
+.set-fee-box {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 20px 0;
+  background: var(--card-bg);
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+.fee-input {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 200px;
+  outline: none;
+  transition: 0.25s;
+}
+
+.admin-dashboard.dark .fee-input {
+  background: #1e293b;
+  border-color: #334155;
+  color: #fff;
+}
+
+.fee-input:focus {
+  border-color: #3b82f6;
+}
+
+.fee-save-btn {
+  background: #3b82f6;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.fee-save-btn:hover {
+  background: #2563eb;
+}

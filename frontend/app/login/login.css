@@ -1,0 +1,169 @@
+/* Keep your existing background + header styles */
+
+.login-container {
+  min-height: 96vh;
+  width: 100%;
+  background: var(--bg, #6fa7fd);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+  position: relative;
+}
+
+.login-header h1 {
+  text-align: center;
+  color: white;
+  font-size: 34px;
+  margin-bottom: 40px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  font-family: "Poppins", sans-serif;
+}
+
+/* CARD WRAPPER */
+.card-wrapper {
+  width: 360px;
+  height: 460px;
+  perspective: 1300px;
+  position: relative;
+}
+
+/* IMPROVED CARD */
+.card-form {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  padding: 34px;
+  box-sizing: border-box;
+  border-radius: 20px;
+
+  /* Improved glass effect */
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  /* Enhanced depth */
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.30);
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  transition: transform 0.8s ease, opacity 0.5s ease;
+  backface-visibility: hidden;
+}
+
+/* BETTER HEADING */
+.card-form h2 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 26px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  letter-spacing: 0.6px;
+}
+
+/* UPGRADED FORM INPUTS */
+.form-input {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15.5px;
+  font-family: "Inter", sans-serif;
+  outline: none;
+  background: rgba(255, 255, 255, 0.75);
+  color: #2b2b2b;
+  transition: 0.25s ease;
+}
+
+.form-input:focus {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.02);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
+}
+
+/* MODERN BUTTON */
+.form-btn {
+  padding: 14px;
+  border: none;
+  background: linear-gradient(145deg, #2f80ed, #0058da);
+  color: white;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  transition: 0.3s ease;
+}
+
+.form-btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0, 85, 255, 0.4);
+}
+
+/* SWITCH LINKS */
+.switch-link {
+  text-align: center;
+  margin-top: 4px;
+  cursor: pointer;
+  color: #e6f2ff;
+  font-size: 15px;
+  text-decoration: underline;
+  transition: 0.2s;
+  font-family: "Inter", sans-serif;
+}
+
+.switch-link:hover {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
+/* FLIP STATES - unchanged */
+.card-wrapper.login .login-side {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+
+.card-wrapper.login .signup-side,
+.card-wrapper.login .forgot-side {
+  transform: rotateY(180deg);
+  opacity: 0;
+}
+
+.card-wrapper.signup .signup-side {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+
+.card-wrapper.signup .login-side,
+.card-wrapper.signup .forgot-side {
+  transform: rotateY(-180deg);
+  opacity: 0;
+}
+
+.card-wrapper.forgot .forgot-side {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+
+.card-wrapper.forgot .login-side,
+.card-wrapper.forgot .signup-side {
+  transform: rotateY(180deg);
+  opacity: 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 420px) {
+  .card-wrapper {
+    width: 92%;
+    height: auto;
+  }
+  .card-form {
+    height: auto;
+    padding: 26px;
+  }
+}

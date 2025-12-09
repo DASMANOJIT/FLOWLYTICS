@@ -1,0 +1,214 @@
+/* ===========================
+   WRAPPER
+=========================== */
+.calendar-wrapper-custom {
+    width: 100%;
+    padding: 18px;
+    border-radius: 20px;
+
+    background: var(--cal-bg, #fafafa);
+    transition: background 0.3s ease;
+}
+
+/* Dark mode compatibility */
+.admin-dashboard.dark .calendar-wrapper-custom {
+    --cal-bg: #131a2a;
+}
+
+/* ===========================
+   MONTH SWITCHER
+=========================== */
+.month-switcher {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    padding: 12px 0;
+    background: var(--cal-bg);
+}
+
+/* Buttons */
+.switch-btn {
+    background: #0b1225;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.25s ease;
+}
+
+.switch-btn:hover {
+    transform: scale(1.1);
+    background: #1d2a47;
+}
+
+/* Dark mode */
+.admin-dashboard.dark .switch-btn {
+    background: #1f2c45;
+}
+.admin-dashboard.dark .switch-btn:hover {
+    background: #2d3d5f;
+}
+
+/* Month label */
+.month-label {
+    margin: 0 14px;
+    font-weight: 600;
+    padding: 8px 18px;
+
+    background: var(--label-bg, white);
+    color: var(--label-text, #1a1b25);
+
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Dark mode */
+.admin-dashboard.dark .month-label {
+    --label-bg: #1b2336;
+    --label-text: #e4e8f0;
+    box-shadow: none;
+}
+
+/* ===========================
+   CALENDAR INNER BOX
+=========================== */
+.calendar-box-custom {
+    background: var(--cal-inner-bg, white);
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark mode */
+.admin-dashboard.dark .calendar-box-custom {
+    --cal-inner-bg: #192235;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* ===========================
+   WEEKDAYS
+=========================== */
+.weekdays-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 20px;
+    gap: 6px;
+}
+
+.weekday {
+    text-align: center;
+    font-weight: 600;
+    padding: 10px 0;
+    border-radius: 10px;
+
+    background: var(--weekday-bg, #f2f4f8);
+    color: var(--weekday-text, #6b7280);
+}
+
+/* Dark mode */
+.admin-dashboard.dark .weekday {
+    --weekday-bg: #232e45;
+    --weekday-text: #aeb9d4;
+}
+
+/* ===========================
+   DAYS GRID
+=========================== */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+/* Empty slots */
+.empty-day {
+    height: 48px;
+}
+
+/* Day box */
+.calendar-day {
+    height: 48px;
+    background: var(--day-bg, #ffffff);
+    color: var(--day-text, #4b5563);
+
+    border-radius: 12px;
+    box-shadow: inset 0 4px 12px rgba(0,0,0,0.06);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 600;
+    transition: 0.25s ease;
+    cursor: pointer;
+}
+
+/* Hover effect */
+.calendar-day:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+/* Dark mode day styles */
+.admin-dashboard.dark .calendar-day {
+    --day-bg: #1f2a3f;
+    --day-text: #d7dcee;
+
+    box-shadow: inset 0 3px 10px rgba(0,0,0,0.4);
+}
+
+.admin-dashboard.dark .calendar-day:hover {
+    background: #26344f;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+=========================== */
+@media (max-width: 900px) {
+    .calendar-box-custom {
+        padding: 16px;
+    }
+
+    .calendar-day,
+    .empty-day {
+        height: 42px;
+    }
+}
+
+@media (max-width: 600px) {
+    .weekdays-row, .days-grid {
+        gap: 6px;
+        transform: scale(0.95);
+        transform-origin: top center;
+    }
+
+    .month-label {
+        padding: 6px 14px;
+        font-size: 14px;
+    }
+
+    .switch-btn {
+        padding: 5px 12px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 450px) {
+    .calendar-wrapper-custom {
+        padding: 12px;
+    }
+
+    .calendar-day,
+    .empty-day {
+        height: 38px;
+    }
+}

@@ -1,0 +1,13 @@
+/* Google Fonts must be at the top */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Playfair+Display:wght@400..900&family=Roboto:wght@100..900&family=Tinos:wght@400;700&display=swap');
+
+/* Tailwind (v3 syntax) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Your custom CSS below */
+body {
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,115 @@
+.students-container {
+  padding: 30px;
+  max-width: 900px;
+  margin: auto;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.students-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.students-search-box {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.students-search-box input {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: 0.2s;
+}
+
+.students-search-box input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 6px #4f46e530;
+}
+
+.students-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.student-card {
+  background: var(--card-bg, #ffffff);
+  padding: 18px 22px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transition: 0.25s ease;
+}
+
+.student-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 26px rgba(0,0,0,0.1);
+}
+
+.fee-status {
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.fee-status.paid {
+  background: #4ade80;
+  color: #064e3b;
+}
+
+.fee-status.unpaid {
+  background: #f87171;
+  color: #7f1d1d;
+}
+
+/* Student Profile Styling Below */
+
+.profile-container {
+  padding: 35px;
+  max-width: 850px;
+  margin: auto;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.profile-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.profile-title {
+  font-size: 30px;
+  margin-bottom: 18px;
+}
+
+.profile-info p {
+  font-size: 17px;
+  margin: 10px 0;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .student-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

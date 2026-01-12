@@ -1,115 +1,237 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import "./student.css";
-import Nav from '../components/navbar/navbar.jsx';
+import Nav from "../components/navbar/navbar.jsx";
 import jsPDF from "jspdf";
 
 export default function StudentDashboard() {
-  const studentName = "Hello Student";
+  const router = useRouter();
 
-  const totalMonthlyFees = 600;
+  const [student, setStudent] = useState(null);
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [months, setMonths] = useState([
-    { month: "March", amount: 600, paid: false },
-    { month: "April", amount: 600, paid: false },
-    { month: "May", amount: 600, paid: false },
-    { month: "June", amount: 600, paid: false },
-    { month: "July", amount: 600, paid: false },
-    { month: "August", amount: 600, paid: false },
-    { month: "September", amount: 600, paid: false },
-    { month: "October", amount: 600, paid: false },
-    { month: "November", amount: 600, paid: false },
-    { month: "December", amount: 600, paid: false },
-    { month: "January", amount: 600, paid: false },
-    { month: "February", amount: 600, paid: false },
-  ]);
+  const [totalMonthlyFees, setTotalMonthlyFees] = useState(0); // <-- dynamic fee
 
-  // ---- Auto Detect Upcoming Unpaid Month (Session: March → February) ----
-  const sessionOrder = [
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-    "January",
-    "February",
+  const months = [
+    "March", "April", "May", "June", "July", "August",
+    "September", "October", "November", "December",
+    "January", "February",
   ];
 
-  const upcomingMonth =
-    months.find((m) => !m.paid) || { month: "All Paid", amount: 0 };
+  // ===============================
+  // FETCH STUDENT + PAYMENTS
+  // ===============================
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
-  // ---- Payment Handler ----
-  const handlePayment = (index) => {
-    const updated = [...months];
-    updated[index].paid = true;
-    setMonths(updated);
-  };
+    Promise.all([
+      fetch("http://localhost:5000/api/students/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      fetch("http://localhost:5000/api/payments/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ])
+      .then(async ([studentRes, paymentRes]) => {
+        if (!studentRes.ok || !paymentRes.ok) throw new Error();
 
-  // ---- Calculate Paid Percentage ----
-  const paidCount = months.filter((m) => m.paid).length;
+        const studentData = await studentRes.json();
+        setStudent(studentData);
+
+        setTotalMonthlyFees(studentData.monthlyFee || 0); // <-- fetch fee from DB
+
+        const paymentData = await paymentRes.json();
+        setPayments(paymentData);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        router.push("/login");
+      })
+      .finally(() => setLoading(false));
+  }, [router]);
+
+  // ===============================
+  // CALCULATIONS
+  // ===============================
+  const paidCount = payments.filter(
+  (p) => p.status === "paid"
+).length;
+
   const progressPercent = (paidCount / months.length) * 100;
 
-  const downloadReceiptPDF = (month) => {
-    const doc = new jsPDF();
+ // ===============================
+// UPCOMING FEE LOGIC (NO UI CHANGE)
+// ===============================
+const paidMonthsSet = new Set(
+  payments.filter(p => p.status === "paid").map(p => p.month)
+);
 
-    // ----- Add Logo (must be in public/logo.png) -----
-    const logo = "/logo.jpg"; // public folder path
+// All unpaid months in academic order
+const unpaidMonths = months.filter(month => !paidMonthsSet.has(month));
 
-    doc.addImage(logo, "PNG", 15, 10, 40, 20); // x, y, width, height
+// Get current academic month (March → February)
+const now = new Date();
+const jsMonthIndex = now.getMonth(); // 0 = Jan
+const academicMonthIndex = jsMonthIndex >= 2 ? jsMonthIndex - 2 : jsMonthIndex + 10;
+const currentAcademicMonth = months[academicMonthIndex];
 
-    // ----- Title -----
-    doc.setFontSize(20);
-    doc.text("PAYMENT RECEIPT", 105, 45, { align: "center" });
+// Priority logic
+let upcomingMonth = { month: "All Paid", amount: 0 };
 
+// 1️⃣ Backlog first
+if (unpaidMonths.length > 0) {
+  upcomingMonth = {
+    month: unpaidMonths[0],
+    amount: totalMonthlyFees,
+  };
+}
+// 2️⃣ Else current month if unpaid
+else if (!paidMonthsSet.has(currentAcademicMonth)) {
+  upcomingMonth = {
+    month: currentAcademicMonth,
+    amount: totalMonthlyFees,
+  };
+}
+
+
+
+
+// ===============================
+// MODERN PDF RECEIPT
+// ===============================
+// ===============================
+// MODERN & PROFESSIONAL PDF RECEIPT
+// ===============================
+const downloadReceiptPDF = (month) => {
+  const doc = new jsPDF("p", "mm", "a4");
+
+  // ---------- COLORS ----------
+  const textDark = [40, 40, 40];
+  const grayBg = [246, 247, 249];
+
+  // ---------- PAGE SIZE ----------
+  const pageWidth = 210;
+
+  // ---------- HEADER (LINEAR GRADIENT SIMULATION) ----------
+  const headerHeight = 45;
+  const startColor = { r: 255, g: 49, b: 49 };   // #ff3131
+  const endColor   = { r: 255, g: 145, b: 77 };  // #ff914d
+
+  for (let i = 0; i < headerHeight; i++) {
+    const r = Math.round(startColor.r + ((endColor.r - startColor.r) * i) / headerHeight);
+    const g = Math.round(startColor.g + ((endColor.g - startColor.g) * i) / headerHeight);
+    const b = Math.round(startColor.b + ((endColor.b - startColor.b) * i) / headerHeight);
+
+    doc.setFillColor(r, g, b);
+    doc.rect(0, i, pageWidth, 1, "F");
+  }
+
+  // ---------- LOGO (CENTERED) ----------
+  const img = new Image();
+  img.src = "/logo.png";
+
+  img.onload = () => {
+    const logoSize = 28;
+    const logoX = (pageWidth - logoSize) / 2;
+    const logoY = 8;
+
+    doc.addImage(img, "PNG", logoX, logoY, logoSize, logoSize);
+
+    // ---------- TITLE ----------
     doc.setFontSize(12);
-    doc.text("SUBHO'S COMPUTER INSTITUTE", 105, 55, { align: "center" });
-    doc.text("E.S.T.D : 2004", 105, 62, { align: "center" });
+    doc.setTextColor(255, 255, 255);
+    doc.text("Payment Receipt", pageWidth / 2, 42, { align: "center" });
 
-    // ----- Receipt Box -----
-    doc.setFontSize(14);
-    doc.text("Student Name: " + studentName, 20, 80);
-    doc.text("Month: " + month.month, 20, 95);
-    doc.text("Amount Paid: Rs." + month.amount, 20, 110);
-    doc.text("Date: " + new Date().toLocaleDateString(), 20, 125);
-    doc.text("Status: PAID", 20, 140);
+    // ---------- RECEIPT CARD ----------
+    doc.setFillColor(...grayBg);
+    doc.roundedRect(15, 55, 180, 120, 6, 6, "F");
 
-    // ----- Footer -----
-    doc.setFontSize(10);
+    // ---------- CARD TITLE ----------
+    doc.setTextColor(...textDark);
+    doc.setFontSize(15);
+    doc.text("Receipt Details", pageWidth / 2, 72, { align: "center" });
+
+    doc.setLineWidth(0.5);
+    doc.line(60, 76, 150, 76);
+
+    // ---------- DETAILS ----------
+    doc.setFontSize(11);
+    const leftX = 32;
+    const rightX = 120;
+    let y = 92;
+
+    doc.text("Student Name", leftX, y);
+    doc.text(student?.name || "-", rightX, y);
+
+    y += 14;
+    doc.text("Payment Month", leftX, y);
+    doc.text(month, rightX, y);
+
+    y += 14;
+    doc.text("Amount Paid", leftX, y);
+    doc.text(`₹ ${totalMonthlyFees}`, rightX, y);
+
+    y += 14;
+    doc.text("Payment Date", leftX, y);
+    doc.text(new Date().toLocaleDateString(), rightX, y);
+
+    y += 14;
+    doc.text("Payment Status", leftX, y);
+    doc.setTextColor(34, 197, 94); // modern green
+    doc.text("PAID", rightX, y);
+
+    // Reset text color
+    doc.setTextColor(...textDark);
+
+    // ---------- FOOTER ----------
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+
     doc.text(
-      "Thank you for your payment!",
-      105,
-      270,
+      "This is a system generated receipt and does not require a signature.",
+      pageWidth / 2,
+      190,
       { align: "center" }
     );
 
-    // Save file
-    doc.save(`${month.month}_receipt.pdf`);
+    doc.text(
+      "Thank you for choosing Subho's Computer Institute",
+      pageWidth / 2,
+      198,
+      { align: "center" }
+    );
+
+    // ---------- SAVE ----------
+    doc.save(`${student?.name || "student"}_${month}_receipt.pdf`);
   };
+};
+
+
+
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="dashboard-wrapper">
       <Nav />
 
-      {/* Student Heading */}
       <div className="student-header">
-
-        <h1 className="student-name">________</h1>
-        <h1 className="student-name">________</h1>
+        <h1 className="student-name">____________</h1>
+         <h1 className="student-name">____________</h1>
         <p className="student-subtitle">Student Dashboard</p>
       </div>
 
-      {/* Total Fees */}
       <div className="total-fees-container">
         <h2 className="total-title">Total Monthly Fees</h2>
         <p className="total-amount">₹{totalMonthlyFees}</p>
       </div>
 
-      {/* ---------------- Progress Bar ---------------- */}
       <div className="progress-section">
         <p className="progress-label">
           Fees Paid: {paidCount}/{months.length}
@@ -118,60 +240,61 @@ export default function StudentDashboard() {
           <div
             className="progress-fill"
             style={{ width: `${progressPercent}%` }}
-          ></div>
+          />
         </div>
       </div>
 
       <h3 className="section-heading">Monthly Fee Details</h3>
 
       <div className="month-list">
-        {months.map((m, index) => (
-          <div key={index} className="month-card">
-            <div className="month-info">
-              <p className="month-name">{m.month}</p>
-              <p className="month-fee">₹{m.amount}</p>
-            </div>
+        {months.map((month) => {
+          const isPaid = payments.some(
+            (p) => p.month === month && p.status === "paid"
+          );
 
-            {m.paid ? (
-              <div className="paid-actions">
-                <span className="paid-label">Paid</span>
+          return (
+            <div key={month} className="month-card">
+              <div className="month-info">
+                <p className="month-name">{month}</p>
+                <p className="month-fee">₹{totalMonthlyFees}</p>
+              </div>
+
+              {isPaid ? (
                 <button
                   className="receipt-button"
-                  onClick={() => downloadReceiptPDF(m)}
+                  onClick={() => downloadReceiptPDF(month)}
                 >
                   Download PDF Receipt
                 </button>
-
-              </div>
-            ) : (
-              <button
-                className="pay-button"
-                onClick={() => window.location.href = `/pay/123?month=${m.month}&amount=${m.amount}`}
-              >
-                Pay Now
-              </button>
-
-            )}
-          </div>
-        ))}
+              ) : (
+                <button
+                  className="pay-button"
+                  onClick={() =>
+                    router.push(
+                      `/pay/${student.id}?month=${month}&amount=${totalMonthlyFees}`
+                    )
+                  }
+                >
+                  Pay Now
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Upcoming */}
       <div className="upcoming-container">
         <h3 className="upcoming-title">Upcoming Fee</h3>
-
         <div className="upcoming-content">
           <div>
             <p className="upcoming-month">{upcomingMonth.month}</p>
             <p className="upcoming-amount">₹{upcomingMonth.amount}</p>
           </div>
-
           <span className="due-label">
             {upcomingMonth.month === "All Paid" ? "✔ No Dues" : "Due Soon"}
           </span>
         </div>
       </div>
-
     </div>
   );
 }

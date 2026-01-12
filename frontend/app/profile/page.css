@@ -1,0 +1,257 @@
+/* ================================
+   SELF PROFILE PAGE
+================================ */
+.self-profile-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 100px 20px 40px;
+  box-sizing: border-box;
+}
+
+.profile-card {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  max-width: 600px;
+  width: 100%;
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  box-sizing: border-box;
+}
+
+/* PROFILE HEADER */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #2f26d3;
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.profile-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.profile-subtitle {
+  font-size: 14px;
+  color: #555555;
+}
+
+/* GRID INFO */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item span {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.info-item p {
+  font-size: 16px;
+  color: #333;
+}
+
+.info-item input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.info-item input:focus {
+  border-color: #2f26d3;
+}
+
+/* UPDATE BUTTON */
+.update-btn {
+  padding: 12px 18px;
+  background: #2f26d3;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.update-btn:hover {
+  background: #1a70f9;
+}
+
+/* LOADING TEXT */
+.loading-text {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 100px;
+  color: #555;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .profile-card {
+    padding: 25px 20px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+
+  .profile-title {
+    font-size: 20px;
+  }
+
+  .update-btn {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .profile-card {
+    padding: 20px 15px;
+  }
+
+  .avatar {
+    width: 55px;
+    height: 55px;
+    font-size: 24px;
+  }
+
+  .profile-title {
+    font-size: 18px;
+  }
+
+  .update-btn {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}
+/* BACK BUTTON */
+.back-dashboard-btn {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: #2f26d3;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.back-dashboard-btn:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   PAYMENT HISTORY
+================================ */
+.payment-history {
+  margin-top: 25px;
+}
+
+.payment-history h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #1a1a1a;
+}
+
+.payment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f5f7fa;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.payment-month {
+  font-weight: 600;
+  color: #222;
+}
+
+.payment-date {
+  font-size: 12px;
+  color: #777;
+}
+
+.payment-right {
+  text-align: right;
+}
+
+.payment-amount {
+  font-weight: 700;
+  color: #111;
+}
+
+.status-paid {
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-unpaid {
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .payment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .payment-right {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Student {
+  id         Int       @id @default(autoincrement())
+  name       String
+  phone      String
+  email      String?
+  password   String
+  school     String
+  class      String
+  joinDate   DateTime  @default(now())
+  monthlyFee Int       @default(600)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  payments   Payment[]
+}
+
+model Payment {
+  id                Int      @id @default(autoincrement())
+  month             String
+  academicYear      Int
+  amount            Int
+  status            String   @default("created")
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  studentId         Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  student           Student  @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, month, academicYear])
+}
+
+
+model AppSettings {
+  id         Int @id @default(1)
+  monthlyFee Int
+}

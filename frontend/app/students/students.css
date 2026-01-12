@@ -1,6 +1,9 @@
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
 .students-container {
   padding: 30px;
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
   animation: fadeIn 0.4s ease-in-out;
 }
@@ -8,9 +11,39 @@
 .students-title {
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+.back-btn {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: white;
+  color: #003bb3;
+  border: 2px solid #aac5ff;
+  text-decoration: none;
+  transition: 0.3s ease;
+  margin: 0 0 22px 0;
+}
+
+.back-btn:hover {
+  background: #003bb3;
+  color: white;
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px rgba(0,60,180,0.25);
+}
+
+
+/* =========================================================
+   SEARCH BOX
+========================================================= */
 .students-search-box {
   width: 100%;
   margin-bottom: 20px;
@@ -23,7 +56,7 @@
   border-radius: 12px;
   border: 1px solid #ccc;
   outline: none;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .students-search-box input:focus {
@@ -31,21 +64,47 @@
   box-shadow: 0 0 6px #4f46e530;
 }
 
+
+/* =========================================================
+   FILTER BAR – Responsive Grid
+========================================================= */
+.students-filters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 15px 0 25px 0;
+}
+
+.students-filters select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   STUDENTS LIST
+========================================================= */
 .students-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 16px;
 }
 
 .student-card {
-  background: var(--card-bg, #ffffff);
+  background: #ffffff;
   padding: 18px 22px;
   border-radius: 16px;
   text-decoration: none;
   color: inherit;
+
+  /* For responsive flexibility */
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
   box-shadow: 0 4px 20px rgba(0,0,0,0.06);
   transition: 0.25s ease;
 }
@@ -55,6 +114,16 @@
   box-shadow: 0 6px 26px rgba(0,0,0,0.1);
 }
 
+.student-card h3 {
+  font-size: 20px;
+}
+
+.student-card p {
+  font-size: 15px;
+}
+
+
+/* FEE STATUS BADGE */
 .fee-status {
   font-weight: 600;
   padding: 7px 18px;
@@ -73,8 +142,10 @@
   color: #7f1d1d;
 }
 
-/* Student Profile Styling Below */
 
+/* =========================================================
+   STUDENT PROFILE PAGE
+========================================================= */
 .profile-container {
   padding: 35px;
   max-width: 850px;
@@ -83,7 +154,7 @@
 }
 
 .profile-card {
-  background: var(--card-bg, #ffffff);
+  background: #ffffff;
   border-radius: 20px;
   padding: 28px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.06);
@@ -99,17 +170,165 @@
   margin: 10px 0;
 }
 
-/* Animation */
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+
+/* =========================================================
+   RESPONSIVENESS
+========================================================= */
+
+/* === Tablets (900px) === */
+@media (max-width: 900px) {
+  .students-filters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .student-card {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 6px;
+  }
+}
+
+/* === Mobile Large (700px) === */
+@media (max-width: 700px) {
+  .students-title {
+    font-size: 28px;
+  }
+
+  .student-card h3 {
+    font-size: 18px;
+  }
+
+  .student-card p {
+    font-size: 14px;
+  }
+}
+
+/* === Small Mobile (500px) === */
+@media (max-width: 500px) {
+  .students-container {
+    padding: 20px;
+  }
+
+  .back-btn {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+
+  .students-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .student-card {
+    padding: 15px 18px;
+  }
+}
+
+/* === Ultra-small devices (350px) === */
+@media (max-width: 350px) {
+  .students-title {
+    font-size: 24px;
+  }
+
+  .students-search-box input {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .student-card {
+    font-size: 14px;
+  }
+}
+/* ============================= */
+/* DATE RANGE FILTER (CALENDAR) */
+/* ============================= */
+
+.students-filters input[type="date"] {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+  min-width: 150px;
+}
+
+/* hover + focus */
+.students-filters input[type="date"]:hover {
+  border-color: #3b82f6;
+}
+
+.students-filters input[type="date"]:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* align date inputs with selects */
+.students-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* mobile responsive */
+@media (max-width: 768px) {
+  .students-filters input[type="date"] {
+    width: 100%;
+  }
+}
+/* 🔹 Clear All Filters Button */
+.clear-filters-btn {
+  padding: 8px 14px;
+  border: 1px solid #e74c3c;
+  background-color: #fff;
+  color: #e74c3c;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-filters-btn:hover {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.clear-filters-btn:active {
+  transform: scale(0.97);
+}
+
+/* 🔹 Better alignment inside filter bar */
+.students-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* 🔹 Responsive fix for small screens */
+@media (max-width: 768px) {
+  .clear-filters-btn {
+    width: 100%;
+    justify-content: center;
   }
 }

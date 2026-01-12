@@ -1,16 +1,21 @@
-/* Keep your existing background + header styles */
-
+/* =======================
+   CONTAINER & HEADER
+======================= */
 .login-container {
-  min-height: 96vh;
-  width: 100%;
-  background: var(--bg, #6fa7fd);
+  min-height: 110vh;
+  width: 100vw;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 60%),
+    linear-gradient(135deg, #6fa7fd, #0058da);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 40px;
+  padding-top: 0px;
   position: relative;
+  overflow: hidden;
 }
+
 
 .login-header h1 {
   text-align: center;
@@ -20,73 +25,89 @@
   font-weight: 800;
   letter-spacing: 1.2px;
   font-family: "Poppins", sans-serif;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.25);
 }
 
-/* CARD WRAPPER */
+/* =======================
+   CARD WRAPPER
+======================= */
 .card-wrapper {
   width: 360px;
-  height: 460px;
   perspective: 1300px;
   position: relative;
+  transition: all 0.6s ease;
 }
 
-/* IMPROVED CARD */
+/* Increase height for signup card */
+.card-wrapper.signup {
+  height: 580px;
+}
+.card-wrapper.login,
+.card-wrapper.forgot {
+  height: 460px;
+}
+
+/* =======================
+   MODERN CARD
+======================= */
 .card-form {
   width: 100%;
-  height: 100%;
   position: absolute;
   padding: 34px;
   box-sizing: border-box;
   border-radius: 20px;
 
-  /* Improved glass effect */
+  /* Glassmorphism effect */
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
 
-  /* Enhanced depth */
+  /* Depth & shadow */
   box-shadow: 0 15px 45px rgba(0, 0, 0, 0.30);
 
   display: flex;
   flex-direction: column;
   gap: 18px;
-
-  transition: transform 0.8s ease, opacity 0.5s ease;
+  transition: transform 0.8s ease, opacity 0.5s ease, height 0.6s ease;
   backface-visibility: hidden;
 }
 
-/* BETTER HEADING */
+/* =======================
+   FORM HEADINGS
+======================= */
 .card-form h2 {
   text-align: center;
   color: #ffffff;
   font-size: 26px;
   margin-bottom: 6px;
   font-weight: 700;
-  font-family: "Poppins", sans-serif;
   letter-spacing: 0.6px;
 }
 
-/* UPGRADED FORM INPUTS */
+/* =======================
+   FORM INPUTS
+======================= */
 .form-input {
   padding: 14px 16px;
   border-radius: 12px;
   border: none;
   font-size: 15.5px;
-  font-family: "Inter", sans-serif;
   outline: none;
   background: rgba(255, 255, 255, 0.75);
   color: #2b2b2b;
-  transition: 0.25s ease;
+  transition: all 0.25s ease;
 }
 
 .form-input:focus {
   background: rgba(255, 255, 255, 0.9);
-  transform: scale(1.02);
+  transform: scale(1.03);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
 }
 
-/* MODERN BUTTON */
+/* =======================
+   MODERN BUTTONS
+======================= */
 .form-btn {
   padding: 14px;
   border: none;
@@ -96,16 +117,17 @@
   font-size: 17px;
   font-weight: 600;
   cursor: pointer;
-  font-family: "Inter", sans-serif;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .form-btn:hover {
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-3px) scale(1.03);
   box-shadow: 0 10px 25px rgba(0, 85, 255, 0.4);
 }
 
-/* SWITCH LINKS */
+/* =======================
+   SWITCH LINKS
+======================= */
 .switch-link {
   text-align: center;
   margin-top: 4px;
@@ -113,8 +135,7 @@
   color: #e6f2ff;
   font-size: 15px;
   text-decoration: underline;
-  transition: 0.2s;
-  font-family: "Inter", sans-serif;
+  transition: all 0.2s;
 }
 
 .switch-link:hover {
@@ -122,12 +143,13 @@
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
 }
 
-/* FLIP STATES - unchanged */
+/* =======================
+   CARD STATES (FLIP)
+======================= */
 .card-wrapper.login .login-side {
   transform: rotateY(0deg);
   opacity: 1;
 }
-
 .card-wrapper.login .signup-side,
 .card-wrapper.login .forgot-side {
   transform: rotateY(180deg);
@@ -138,7 +160,6 @@
   transform: rotateY(0deg);
   opacity: 1;
 }
-
 .card-wrapper.signup .login-side,
 .card-wrapper.signup .forgot-side {
   transform: rotateY(-180deg);
@@ -149,14 +170,46 @@
   transform: rotateY(0deg);
   opacity: 1;
 }
-
 .card-wrapper.forgot .login-side,
 .card-wrapper.forgot .signup-side {
   transform: rotateY(180deg);
   opacity: 0;
 }
 
-/* RESPONSIVE */
+/* =======================
+   TOGGLE BUTTONS
+======================= */
+.form-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.toggle-btn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn.active {
+  background: linear-gradient(145deg, #2f80ed, #0058da);
+  box-shadow: 0 6px 18px rgba(0, 85, 255, 0.35);
+}
+
+.toggle-btn:hover {
+  transform: scale(1.05);
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
 @media (max-width: 420px) {
   .card-wrapper {
     width: 92%;

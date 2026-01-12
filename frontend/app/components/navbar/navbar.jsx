@@ -1,15 +1,37 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 import "./navbar.css";
 
 export default function StudentNavbar() {
-
-  // Temporary student data
-  const [studentName] = useState("Hello Student");
-
-  // Mobile menu toggle
+  const [studentName, setStudentName] = useState(""); // dynamic
   const [open, setOpen] = useState(false);
+
+  // ========================
+  // FETCH STUDENT NAME
+  // ========================
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    fetch("http://localhost:5000/api/students/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.name) setStudentName(data.name);
+      })
+      .catch(err => console.error("Failed to fetch student name:", err));
+  }, []);
+
+  // ========================
+  // Logout function
+  // ========================
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // remove token
+    window.location.href = "/login";   // redirect
+  };
 
   return (
     <nav className="student-navbar">
@@ -29,8 +51,17 @@ export default function StudentNavbar() {
 
         {/* RIGHT → Desktop navigation */}
         <div className="nav-right desktop-only">
-          <span className="student-name">{studentName}</span>
-          <button className="logout-btn">Logout</button>
+          <Link href="/profile" className="student-profile-link">
+            <Image
+              src="/user.png" // replace with your icon path
+              width={40}
+              height={35}
+              alt="User Icon"
+              className="user-icon"
+            />
+            <span className="student-name">HELLO {studentName.toUpperCase()}</span>
+          </Link>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
 
         {/* RIGHT → Hamburger on mobile */}
@@ -44,8 +75,17 @@ export default function StudentNavbar() {
       {/* MOBILE MENU */}
       {open && (
         <div className="mobile-menu">
-          <span className="student-name-mobile">{studentName}</span>
-          <button className="logout-btn-mobile">Logout</button>
+          <Link href="/profile" className="student-profile-link">
+            <Image
+              src="/user.png" // replace with your icon path
+              width={25}
+              height={25}
+              alt="User Icon"
+              className="user-icon-mobile"
+            />
+            <span className="student-name-mobile">HELLO {studentName.toUpperCase()}</span>
+          </Link>
+          <button className="logout-btn-mobile" onClick={handleLogout}>Logout</button>
         </div>
       )}
     </nav>

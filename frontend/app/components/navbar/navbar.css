@@ -231,3 +231,76 @@ nav.student-navbar .hamburger {
   }
 }
 
+/* ================================
+   USER ICON (MOBILE INCLUDED)
+================================ */
+.user-icon {
+  width: 35px;          
+  height: 35px;
+  border-radius: 50%;   
+  object-fit: cover;    
+  border: 2px solid #ffffff; 
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-icon:hover {
+  transform: scale(1.1);         
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.student-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.student-profile-link:hover .student-name {
+  color: #f0f0f0;
+}
+
+/* ================================
+   MOBILE RESPONSIVE PROFILE LINK
+================================ */
+@media (max-width: 768px) {
+  /* desktop right section hidden, mobile menu used */
+  .nav-right {
+    display: none;
+  }
+
+  .mobile-menu .student-profile-link {
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+  }
+
+  .mobile-menu .user-icon {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #ffffff;
+  }
+
+  .mobile-menu .student-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .mobile-menu .student-profile-link:hover .student-name {
+    color: #e0e0e0;
+  }
+}
+
+/* VERY SMALL SCREENS */
+@media (max-width: 360px) {
+  .mobile-menu .user-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mobile-menu .student-name {
+    font-size: 14px;
+  }
+}

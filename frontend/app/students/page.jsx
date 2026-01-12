@@ -1,5 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -19,7 +21,7 @@ export default function StudentsPage() {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-const API_BASE = "https://flowlytics-backend.onrender.com";
+const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
   // 🔹 Restore filters FROM URL
   useEffect(() => {
     setSearch(searchParams.get("search") || "");

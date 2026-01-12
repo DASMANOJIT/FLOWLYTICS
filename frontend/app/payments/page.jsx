@@ -16,7 +16,7 @@ export default function PaymentsPage() {
     "September", "October", "November", "December",
     "January", "February",
   ];
-const API_BASE = "https://flowlytics-backend.onrender.com";
+const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     const token = localStorage.getItem("token");
 

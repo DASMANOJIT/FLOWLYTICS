@@ -10,7 +10,7 @@ export default function StudentProfile() {
   const router = useRouter();
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(false);
-const API_BASE = "https://flowlytics-backend.onrender.com";
+const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     const token = localStorage.getItem("token");
 

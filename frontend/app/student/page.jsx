@@ -19,7 +19,7 @@ export default function StudentDashboard() {
     "September", "October", "November", "December",
     "January", "February",
   ];
-const API_BASE = "https://flowlytics-backend.onrender.com";
+const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
   // ===============================
   // FETCH STUDENT + PAYMENTS
   // ===============================

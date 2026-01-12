@@ -3,14 +3,18 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
+  // Required on Render
+  output: "standalone",
+
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",
     },
   },
 
-  // REQUIRED for Render SSR deployment
-  output: "standalone",
+  // Prevent prerender errors
+  skipTrailingSlashRedirect: true,
+  trailingSlash: false,
 };
 
 export default nextConfig;

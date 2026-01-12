@@ -7,7 +7,7 @@ import "./navbar.css";
 export default function StudentNavbar() {
   const [studentName, setStudentName] = useState(""); // dynamic
   const [open, setOpen] = useState(false);
-const API_BASE = "https://flowlytics-backend.onrender.com";
+const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
   // ========================
   // FETCH STUDENT NAME
   // ========================

@@ -7,7 +7,7 @@ import "./navbar.css";
 export default function StudentNavbar() {
   const [studentName, setStudentName] = useState(""); // dynamic
   const [open, setOpen] = useState(false);
-
+const API_BASE = "https://flowlytics-backend.onrender.com";
   // ========================
   // FETCH STUDENT NAME
   // ========================
@@ -15,7 +15,7 @@ export default function StudentNavbar() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch("http://localhost:5000/api/students/me", {
+    fetch(`${API_BASE}/api/students/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())

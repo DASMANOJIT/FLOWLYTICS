@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   const [filterTo, setFilterTo] = useState("");
   const [filteredRevenue, setFilteredRevenue] = useState(0);
   const [filteredPaid, setFilteredPaid] = useState(0);
-
+const API_BASE = "https://flowlytics-backend.onrender.com";
   // =========================
   // Fetch Students & Revenue
   // =========================
@@ -42,7 +42,7 @@ export default function AdminDashboard() {
     }
 
     // Fetch students
-    fetch("http://localhost:5000/api/students", {
+    fetch(`${API_BASE}/api/students`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       .catch(err => console.error(err));
 
     // Fetch total revenue
-    fetch("http://localhost:5000/api/payments/revenue", {
+    fetch(`${API_BASE}/api/payments/revenue`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -149,7 +149,7 @@ const handleLogout = () => {
   if (!token) return alert("No token found. Please login.");
 
   try {
-    const res = await fetch("http://localhost:5000/api/settings/monthly-fee", {
+    const res = await fetch(`${API_BASE}/api/settings/monthly-fee`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

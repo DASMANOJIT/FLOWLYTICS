@@ -10,7 +10,7 @@ export default function StudentSelfProfile() {
   const [student, setStudent] = useState(null);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-
+const API_BASE = "https://flowlytics-backend.onrender.com";
   // =========================
   // FETCH PROFILE + PAYMENTS
   // =========================
@@ -22,10 +22,10 @@ export default function StudentSelfProfile() {
     }
 
     Promise.all([
-      fetch("http://localhost:5000/api/students/me", {
+      fetch(`${API_BASE}/api/students/me`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      fetch("http://localhost:5000/api/payments/my", {
+      fetch(`${API_BASE}/api/payments/my`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
     ])

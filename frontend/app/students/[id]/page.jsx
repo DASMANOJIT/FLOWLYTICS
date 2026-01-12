@@ -9,11 +9,11 @@ export default function StudentProfile() {
   const router = useRouter();
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(false);
-
+const API_BASE = "https://flowlytics-backend.onrender.com";
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:5000/api/students/${id}`, {
+    fetch(`${API_BASE}/api/students/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -33,7 +33,7 @@ export default function StudentProfile() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        `http://localhost:5000/api/students/${id}`,
+        `${API_BASE}/api/students/${id}`,
         {
           method: "DELETE",
           headers: {

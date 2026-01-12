@@ -19,7 +19,7 @@ export default function StudentsPage() {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
+const API_BASE = "https://flowlytics-backend.onrender.com";
   // 🔹 Restore filters FROM URL
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
@@ -39,7 +39,7 @@ export default function StudentsPage() {
       return;
     }
 
-    fetch("http://localhost:5000/api/students", {
+    fetch(`${API_BASE}/api/students`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

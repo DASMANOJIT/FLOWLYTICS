@@ -9,7 +9,7 @@ export default function Login() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
 
-  const API = "http://localhost:5000";
+  const API_BASE = "https://flowlytics-backend.onrender.com";
 
   // =====================
   // LOGIN
@@ -21,7 +21,7 @@ export default function Login() {
     const password = e.target.password.value;
 
     try {
-      const res = await fetch(`${API}/api/auth/login`, {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -62,7 +62,7 @@ export default function Login() {
       // ✅ MISSING LINE (ROOT FIX)
       
 
-      const res = await fetch(`${API}/api/auth/register`, {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -107,7 +107,7 @@ export default function Login() {
     const newPassword = e.target.newPassword.value;
 
     try {
-      const res = await fetch(`${API}/api/auth/reset-password`, {
+      const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, phone, newPassword }),

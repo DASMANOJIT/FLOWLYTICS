@@ -16,11 +16,11 @@ export default function PaymentsPage() {
     "September", "October", "November", "December",
     "January", "February",
   ];
-
+const API_BASE = "https://flowlytics-backend.onrender.com";
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:5000/api/students", {
+    fetch(`${API_BASE}/api/students`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -36,7 +36,7 @@ export default function PaymentsPage() {
 
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:5000/api/payments/mark-paid", {
+    const res = await fetch(`${API_BASE}/api/payments/mark-paid`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

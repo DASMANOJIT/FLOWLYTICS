@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "2mb",
     },
   },
+
+  // REQUIRED for Render SSR deployment
+  output: "standalone",
 };
 
 export default nextConfig;

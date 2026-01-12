@@ -21,8 +21,11 @@ export default function StudentsPage() {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
-  // 🔹 Restore filters FROM URL
+
+  // ✅ Correct variable name (matches Render env: NEXT_PUBLIC_API)
+  const API_BASE = process.env.NEXT_PUBLIC_API;
+
+  // Restore filters from URL
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
     setStatusFilter(searchParams.get("status") || "all");
@@ -33,7 +36,7 @@ const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
     setToDate(searchParams.get("to") || "");
   }, []);
 
-  // 🔹 Fetch students
+  // Fetch students
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -53,7 +56,7 @@ const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
       .catch((err) => console.error(err));
   }, []);
 
-  // 🔹 Sync filters TO URL
+  // Sync filters to URL
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -68,7 +71,7 @@ const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
     router.replace(`/students?${params.toString()}`, { scroll: false });
   }, [search, statusFilter, classFilter, schoolFilter, sortOrder, fromDate, toDate]);
 
-  // 🔹 CLEAR ALL FILTERS
+  // Clear filters
   const clearAllFilters = () => {
     setSearch("");
     setStatusFilter("all");
@@ -81,30 +84,29 @@ const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
     router.replace("/students", { scroll: false });
   };
 
-  // 🔹 FILTER + SORT PIPELINE
+  // Filter + sort
   const filtered = students
-  .filter((s) => {
-    const query = search.toLowerCase();
-    return (
-      s?.name?.toLowerCase().includes(query) ||
-      s?.phone?.toLowerCase().includes(query)
-    );
-  })
-  .filter((s) => (statusFilter === "all" ? true : s.feesStatus === statusFilter))
-  .filter((s) => (classFilter === "all" ? true : s.class === classFilter))
-  .filter((s) => (schoolFilter === "all" ? true : s.school === schoolFilter))
-  .filter((s) => {
-    if (!fromDate && !toDate) return true;
-    const joinDate = new Date(s.joinDate);
-    if (fromDate && joinDate < new Date(fromDate)) return false;
-    if (toDate && joinDate > new Date(toDate)) return false;
-    return true;
-  })
-  .sort((a, b) => {
-    if (sortOrder === "az") return a.name.localeCompare(b.name);
-    return 0;
-  });
-
+    .filter((s) => {
+      const query = search.toLowerCase();
+      return (
+        s?.name?.toLowerCase().includes(query) ||
+        s?.phone?.toLowerCase().includes(query)
+      );
+    })
+    .filter((s) => (statusFilter === "all" ? true : s.feesStatus === statusFilter))
+    .filter((s) => (classFilter === "all" ? true : s.class === classFilter))
+    .filter((s) => (schoolFilter === "all" ? true : s.school === schoolFilter))
+    .filter((s) => {
+      if (!fromDate && !toDate) return true;
+      const joinDate = new Date(s.joinDate);
+      if (fromDate && joinDate < new Date(fromDate)) return false;
+      if (toDate && joinDate > new Date(toDate)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortOrder === "az") return a.name.localeCompare(b.name);
+      return 0;
+    });
 
   const classes = [...new Set(students.map((s) => s.class).filter(Boolean))];
   const schools = [...new Set(students.map((s) => s.school).filter(Boolean))];
@@ -157,17 +159,11 @@ const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
         <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
         <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
 
-        {/* ✅ CLEAR ALL BUTTON */}
-        <button
-          type="button"
-          className="clear-filters-btn"
-          onClick={clearAllFilters}
-        >
+        <button type="button" className="clear-filters-btn" onClick={clearAllFilters}>
           Clear All
         </button>
       </div>
 
-      {/* STUDENT LIST */}
       <div className="students-list">
         {filtered.map((student) => (
           <Link

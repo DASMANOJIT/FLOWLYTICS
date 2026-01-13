@@ -7,7 +7,7 @@ import "./navbar.css";
 export default function StudentNavbar() {
   const [studentName, setStudentName] = useState(""); // dynamic
   const [open, setOpen] = useState(false);
-const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API;
   // ========================
   // FETCH STUDENT NAME
   // ========================

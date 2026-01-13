@@ -5,9 +5,10 @@ export const fetchCache = "force-no-store";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import "./students.css";
 
-export default function StudentsPage() {
+function StudentsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -22,10 +23,8 @@ export default function StudentsPage() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  // ✅ Correct variable name (matches Render env: NEXT_PUBLIC_API)
   const API_BASE = process.env.NEXT_PUBLIC_API;
 
-  // Restore filters from URL
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
     setStatusFilter(searchParams.get("status") || "all");
@@ -36,7 +35,6 @@ export default function StudentsPage() {
     setToDate(searchParams.get("to") || "");
   }, []);
 
-  // Fetch students
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -56,7 +54,6 @@ export default function StudentsPage() {
       .catch((err) => console.error(err));
   }, []);
 
-  // Sync filters to URL
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -71,7 +68,6 @@ export default function StudentsPage() {
     router.replace(`/students?${params.toString()}`, { scroll: false });
   }, [search, statusFilter, classFilter, schoolFilter, sortOrder, fromDate, toDate]);
 
-  // Clear filters
   const clearAllFilters = () => {
     setSearch("");
     setStatusFilter("all");
@@ -84,7 +80,6 @@ export default function StudentsPage() {
     router.replace("/students", { scroll: false });
   };
 
-  // Filter + sort
   const filtered = students
     .filter((s) => {
       const query = search.toLowerCase();
@@ -119,7 +114,6 @@ export default function StudentsPage() {
         ← Back to Dashboard
       </Link>
 
-      {/* SEARCH */}
       <div className="students-search-box">
         <input
           type="text"
@@ -129,7 +123,6 @@ export default function StudentsPage() {
         />
       </div>
 
-      {/* FILTERS */}
       <div className="students-filters">
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
           <option value="all">All Fees</option>
@@ -178,5 +171,13 @@ export default function StudentsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function StudentsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <StudentsPageContent />
+    </Suspense>
   );
 }

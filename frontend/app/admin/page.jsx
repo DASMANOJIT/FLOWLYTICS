@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   const [filterTo, setFilterTo] = useState("");
   const [filteredRevenue, setFilteredRevenue] = useState(0);
   const [filteredPaid, setFilteredPaid] = useState(0);
-const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API;
   // =========================
   // Fetch Students & Revenue
   // =========================

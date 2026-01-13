@@ -9,7 +9,7 @@ export default function Login() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
 
-const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API;
 
   // =====================
   // LOGIN

@@ -19,7 +19,7 @@ export default function StudentDashboard() {
     "September", "October", "November", "December",
     "January", "February",
   ];
-const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API;
   // ===============================
   // FETCH STUDENT + PAYMENTS
   // ===============================

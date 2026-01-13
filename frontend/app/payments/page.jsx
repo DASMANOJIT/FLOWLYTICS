@@ -16,7 +16,7 @@ export default function PaymentsPage() {
     "September", "October", "November", "December",
     "January", "February",
   ];
-const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API;
   useEffect(() => {
     const token = localStorage.getItem("token");
 

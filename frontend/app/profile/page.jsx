@@ -10,7 +10,7 @@ export default function StudentSelfProfile() {
   const [student, setStudent] = useState(null);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-const API_BASE =  process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API;
   // =========================
   // FETCH PROFILE + PAYMENTS
   // =========================

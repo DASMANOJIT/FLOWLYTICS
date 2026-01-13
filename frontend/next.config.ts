@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
 
-  // Required on Render
-  output: "standalone",
+  // Remove standalone, it triggers prerendering of static pages
+  output: undefined,
 
   experimental: {
     serverActions: {
@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
     },
   },
 
-  // Prevent prerender errors
   skipTrailingSlashRedirect: true,
   trailingSlash: false,
 };

@@ -63,7 +63,7 @@ export const makePayment = async (req, res) => {
 // ===============================
 export const getMyPayments = async (req, res) => {
   try {
-    if (req.user.role !== "student") {
+    if (req.userRole !== "student") {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -91,7 +91,7 @@ export const getMyPayments = async (req, res) => {
 // ===============================
 export const getAllPayments = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.userRole !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -114,7 +114,7 @@ export const getAllPayments = async (req, res) => {
 
 export const markPaid = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.userRole !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -181,7 +181,7 @@ export const markPaid = async (req, res) => {
 // ===============================
 export const getTotalRevenue = async (req, res) => {
   try {
-    if (!req.user || req.user.role !== "admin") {
+    if (!req.user || req.userRole !== "admin") {
       return res.json({ totalRevenue: 0 });
     }
 
@@ -208,7 +208,7 @@ export const getTotalRevenue = async (req, res) => {
 // ===============================
 export const setMonthlyFee = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.userRole !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
 

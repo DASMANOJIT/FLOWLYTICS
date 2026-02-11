@@ -28,26 +28,29 @@ model Student {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   payments   Payment[]
+  
 }
 
 model Payment {
-  id                Int      @id @default(autoincrement())
-  month             String
-  academicYear      Int
-  amount            Int
-  status            String   @default("created")
-  razorpayOrderId   String?
-  razorpayPaymentId String?
-  studentId         Int
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  student           Student  @relation(fields: [studentId], references: [id])
+  id                   Int      @id @default(autoincrement())
+  month                String
+  academicYear         Int
+  amount               Int
+  status               String   @default("created")
+  phonepeTransactionId String?
+  phonepePaymentId     String?
+  studentId            Int
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  student              Student  @relation(fields: [studentId], references: [id])
 
   @@unique([studentId, month, academicYear])
 }
+
 
 
 model AppSettings {
   id         Int @id @default(1)
   monthlyFee Int
 }
+

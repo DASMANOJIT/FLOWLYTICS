@@ -15,41 +15,46 @@ export const protect = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({ message: "No token provided" });
+      return res.status(401).json({ message: "Not authorized, no token" });
     }
 
+    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 🔥 CHECK ADMIN FIRST
-    const admin = await prisma.admin.findUnique({
-      where: { id: decoded.id },
-    });
-
-    if (admin) {
-      req.user = {
-        id: admin.id,
-        role: "admin",
-      };
-      return next();
+    // Fetch user from DB
+    let user = null;
+    if (decoded.role === "admin") {
+      user = await prisma.admin.findUnique({ where: { id: decoded.id } });
+    } else if (decoded.role === "student") {
+      user = await prisma.student.findUnique({ where: { id: decoded.id } });
     }
 
-    // 🔥 CHECK STUDENT
-    const student = await prisma.student.findUnique({
-      where: { id: decoded.id },
-    });
-
-    if (student) {
-      req.user = {
-        id: student.id,
-        role: "student",
-      };
-      return next();
+    if (!user) {
+      return res.status(401).json({ message: "Not authorized, invalid user" });
     }
 
-    return res.status(401).json({ message: "User not found" });
+    // Attach user to request
+    req.user = user;
+    req.userRole = decoded.role;
 
+    next();
   } catch (error) {
-    console.error("AUTH ERROR:", error);
-    return res.status(401).json({ message: "Token invalid" });
+    console.error("Auth error:", error.message);
+    return res.status(401).json({ message: "Not authorized, token failed" });
   }
+};
+
+
+
+
+
+
+
+
+
+export const adminOnly = (req, res, next) => {
+  if (!req.user || req.userRole !== "admin") {
+    return res.status(403).json({ message: "Forbidden: Admins only" });
+  }
+  next();
 };

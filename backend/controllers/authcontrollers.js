@@ -80,11 +80,16 @@ export const registerUser = async (req, res) => {
 // =====================================================
 // LOGIN (ADMIN FIRST → STUDENT)
 // =====================================================
+// =====================================================
+// LOGIN (ADMIN FIRST → STUDENT)
+// =====================================================
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // =========================
     // ADMIN LOGIN
+    // =========================
     const admin = await prisma.admin.findUnique({ where: { email } });
 
     if (admin) {
@@ -96,7 +101,7 @@ export const loginUser = async (req, res) => {
       const token = jwt.sign(
         { id: admin.id, role: "admin" },
         process.env.JWT_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: "7d" }
       );
 
       return res.json({
@@ -106,8 +111,11 @@ export const loginUser = async (req, res) => {
       });
     }
 
+    // =========================
     // STUDENT LOGIN
+    // =========================
     const student = await prisma.student.findFirst({ where: { email } });
+
     if (!student) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -120,7 +128,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: student.id, role: "student" },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "7d" }
     );
 
     return res.json({
@@ -130,9 +138,11 @@ export const loginUser = async (req, res) => {
     });
 
   } catch (err) {
+    console.error("LOGIN ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // =====================================================
 // RESET PASSWORD (ADMIN / STUDENT)

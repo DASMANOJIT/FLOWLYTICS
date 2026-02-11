@@ -4,19 +4,17 @@ import {
   getLoggedInStudent,
   getStudentById,
   deleteStudent,
-  
 } from "../controllers/studentcontrollers.js";
-import { protect } from "../middleware/authmiddleware.js";
-import prisma from "../prisma/client.js";
+import { protect, adminOnly } from "../middleware/authmiddleware.js";
 
 const router = express.Router();
 
-router.get("/", protect, getStudents);
+// ADMIN
+router.get("/", protect, adminOnly, getStudents);
+// STUDENT SELF
 router.get("/me", protect, getLoggedInStudent);
-router.get("/:id", protect, getStudentById);
-router.delete("/:id", protect, deleteStudent);
-
-
+router.get("/:id", protect, adminOnly, getStudentById);
+router.delete("/:id", protect, adminOnly, deleteStudent);
 
 
 export default router;

@@ -11,7 +11,6 @@ import paymentRoutes from "./routes/paymentroute.js";
 import settingsRoutes from "./routes/settingsroute.js";
 import { autoPromoteIfEligible } from "./controllers/studentcontrollers.js";
 
-
 // Load .env variables
 dotenv.config();
 
@@ -21,7 +20,8 @@ const app = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
+app.use("/api/payments", paymentRoutes);
 // ================================
 // ENSURE APP SETTINGS EXISTS
 // ================================
@@ -65,8 +65,8 @@ cron.schedule("0 0 1 3 *", async () => {
 // ================================
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
-app.use("/api/payments", paymentRoutes);
 app.use("/api/settings", settingsRoutes);
+
 
 // Health check
 app.get("/", (req, res) => {

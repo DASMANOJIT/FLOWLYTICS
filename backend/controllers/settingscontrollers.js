@@ -3,7 +3,7 @@ import prisma from "../prisma/client.js";
 // ADMIN: Set Monthly Fee (GLOBAL)
 export const setMonthlyFee = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.userRole !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
 

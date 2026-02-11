@@ -64,11 +64,11 @@ export default function AdminDashboard() {
       .catch(err => console.error(err));
 
   }, []);
-// Logout function
-const handleLogout = () => {
-  localStorage.removeItem("token"); // remove the token
-  window.location.href = "/login";  // redirect to login page
-};
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // remove the token
+    window.location.href = "/login";  // redirect to login page
+  };
 
   // =========================
   // Filter Functions
@@ -112,7 +112,7 @@ const handleLogout = () => {
     totalStudents: students.length,
     paid: students.filter(s => s.feesStatus === "paid").length,
     unpaid: students.filter(s => s.feesStatus !== "paid").length,
-    revenue: totalRevenue ,
+    revenue: totalRevenue,
   };
 
   const pieData = {
@@ -145,32 +145,35 @@ const handleLogout = () => {
   // SAVE MONTHLY FEE (NEW FUNCTIONALITY)
   // =========================
   const saveMonthlyFee = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) return alert("No token found. Please login.");
+    const token = localStorage.getItem("token");
+    if (!token) return alert("No token found. Please login.");
 
-  try {
-    const res = await fetch("http://localhost:5000/api/settings/monthly-fee", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ fee: Number(monthlyFee) }),
-    });
+    try {
+      const res = await fetch("http://localhost:5000/api/settings/monthly-fee", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ fee: Number(monthlyFee) }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      // Show backend error message
-      return alert(`Failed to update fee: ${data.message || "Unknown error"}`);
+      if (!res.ok) {
+        // Show backend error message
+        return alert(`Failed to update fee: ${data.message || "Unknown error"}`);
+      }
+
+      alert(`Monthly fee updated to ₹${monthlyFee}`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update fee. Check console for error.");
     }
+  };
+ 
 
-    alert(`Monthly fee updated to ₹${monthlyFee}`);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update fee. Check console for error.");
-  }
-};
+  
 
 
   return (
@@ -268,6 +271,8 @@ const handleLogout = () => {
           <p>Fees Paid: ₹{filteredPaid}</p>
         </div>
       </div>
+     
+
 
       {/* CHART + CALENDAR */}
       <div className="chart-calendar-row">

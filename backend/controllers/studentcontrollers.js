@@ -9,38 +9,28 @@ const prisma = new PrismaClient();
 // =======================
 export const getStudents = async (req, res) => {
   try {
+    if (req.userRole !== "admin") {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
     const students = await prisma.student.findMany({
-      include: { payments: { orderBy: { createdAt: "desc" } } },
+      include: {
+        payments: true,
+      },
+      orderBy: { name: "asc" },
     });
 
-    const enhanced = students.map((s) => {
-      const paidPayments = s.payments.filter((p) => p.status === "paid");
-      const latestPayment = paidPayments[0] || null;
-
+    const enriched = students.map((s) => {
+      const hasPaid = s.payments.some((p) => p.status === "paid");
       return {
-        id: s.id,
-        name: s.name,
-        email: s.email,
-        phone: s.phone,
-        school: s.school,
-        class: s.class,
-        monthlyFee: s.monthlyFee,
-        payments: paidPayments.map((p) => ({
-          id: p.id,
-          amount: p.amount,
-          month: p.month,
-          date: p.createdAt,
-          status: p.status,
-        })),
-        paidMonths: paidPayments.map((p) => p.month),
-        latestPaymentMonth: latestPayment ? latestPayment.month : null,
-        feesStatus: latestPayment ? "paid" : "unpaid",
-        revenue: paidPayments.reduce((sum, p) => sum + p.amount, 0),
+        ...s,
+        feesStatus: hasPaid ? "paid" : "unpaid",
       };
     });
 
-    res.json(enhanced);
+    res.json(enriched);
   } catch (err) {
+    console.error("getStudents error:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -50,7 +40,7 @@ export const getStudents = async (req, res) => {
 // =======================
 export const getLoggedInStudent = async (req, res) => {
   try {
-    if (req.user.role !== "student") {
+    if (req.userRole !== "student") {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -61,7 +51,9 @@ export const getLoggedInStudent = async (req, res) => {
       include: { payments: { orderBy: { createdAt: "desc" } } },
     });
 
-    if (!student) return res.status(404).json({ message: "Student not found" });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
 
     res.json(student);
   } catch (err) {
@@ -73,7 +65,7 @@ export const getLoggedInStudent = async (req, res) => {
 // ❌ REMOVE MANUAL PROFILE UPDATE
 // Student cannot update class/school manually
 // =======================
-// export const updateLoggedInStudent = async (req, res) => { ... }  
+// export const updateLoggedInStudent = async (req, res) => { ... }
 // removed to prevent manual class update
 
 // =======================
@@ -88,7 +80,9 @@ export const getStudentById = async (req, res) => {
       include: { payments: { orderBy: { createdAt: "desc" } } },
     });
 
-    if (!student) return res.status(404).json({ message: "Student not found" });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
 
     res.json(student);
   } catch (err) {
@@ -101,7 +95,7 @@ export const getStudentById = async (req, res) => {
 // =======================
 export const deleteStudent = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
+    if (req.userRole !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -116,7 +110,9 @@ export const deleteStudent = async (req, res) => {
   }
 };
 
-
+// =======================
+// AUTO PROMOTION (INTERNAL USE)
+// =======================
 export const autoPromoteIfEligible = async (studentId) => {
   if (!isFebruary()) return;
 
@@ -156,6 +152,3 @@ export const autoPromoteIfEligible = async (studentId) => {
     `✅ Auto-promoted ${student.name} for academic year ${academicYear}`
   );
 };
-
-
-

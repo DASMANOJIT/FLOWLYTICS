@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./fallingword.css";
 
 export default function FallingWords() {
-  const [words] = useState(() => {
+  const [words, setWords] = useState([]);
+
+  useEffect(() => {
     const wordList = [
       "Learn","Code","Develop","Design","Create","Innovate",
       "Build","Explore","Inspire","Achieve","Grow","Collaborate",
@@ -17,7 +19,9 @@ export default function FallingWords() {
       duration: `${10 + Math.random() * 10}s`,
       delay: `${Math.random() * 5}s`,
     }));
-  });
+
+    setWords(generated);
+  }, []);
 
   return (
     <div className="falling-layer">

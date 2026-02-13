@@ -2,12 +2,14 @@
 import { useState } from "react";
 import "./login.css";
 import Fall from "../animation/fallingword.jsx";
-
-const API = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+import bcrypt from "bcryptjs";
 
 export default function Login() {
   const [activeForm, setActiveForm] = useState("login");
   const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+
+  const API = "http://localhost:5000";
 
   // =====================
   // LOGIN
@@ -89,6 +91,7 @@ export default function Login() {
   // =====================
   const sendOTP = () => {
     const generated = Math.floor(100000 + Math.random() * 900000).toString();
+    setOtp(generated);
     setOtpSent(true);
     alert("Your OTP is: " + generated);
   };
@@ -126,7 +129,7 @@ export default function Login() {
 
       <header className="login-header">
         <h1>
-          WELCOME TO THE <br /> SUBHO&apos;S COMPUTER INSTITUTE
+          WELCOME TO THE <br /> SUBHO'S COMPUTER INSTITUTE
         </h1>
       </header>
 

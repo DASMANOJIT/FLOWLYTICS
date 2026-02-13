@@ -1,6 +1,7 @@
 import prisma from "../prisma/client.js";
 import { phonepeConfig, generateChecksum } from "../config/phonepe.config.js";
 import { getAcademicYear } from "../utils/academicYear.js";
+import { sendFeePaidWhatsAppNotification } from "../services/whatsappservice.js";
 
 export const initiatePhonePePayment = async (req, res) => {
   try {
@@ -143,13 +144,30 @@ export const phonePeCallback = async (req, res) => {
     if (!payment) return res.status(400).send("Payment not found");
 
     if (code === "PAYMENT_SUCCESS" || code === "SUCCESS") {
-      await prisma.payment.update({
+      const updatedPayment = await prisma.payment.update({
         where: { id: payment.id },
         data: {
           status: "paid",
           phonepePaymentId: transactionId,
         }
       });
+
+      if (payment.status !== "paid") {
+        const student = await prisma.student.findUnique({
+          where: { id: Number(payment.studentId) },
+          select: { id: true, name: true, phone: true },
+        });
+
+        if (student) {
+          sendFeePaidWhatsAppNotification({
+            student,
+            payment: updatedPayment,
+            mode: "phonepe",
+          }).catch((err) => {
+            console.error("WhatsApp fee-paid send failed (phonepe):", err.message);
+          });
+        }
+      }
     } else {
       await prisma.payment.update({
         where: { id: payment.id },

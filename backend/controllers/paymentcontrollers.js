@@ -1,6 +1,7 @@
 import prisma from "../prisma/client.js";
 import { getAcademicYear, isFebruary } from "../utils/academicYear.js";
 import { autoPromoteIfEligible } from "./studentcontrollers.js";
+import { sendFeePaidWhatsAppNotification } from "../services/whatsappservice.js";
 /**
  * Academic Year Logic
  * Academic session = March → February
@@ -158,6 +159,21 @@ export const markPaid = async (req, res) => {
         status: "paid",
       },
     });
+
+    const student = await prisma.student.findUnique({
+      where: { id: Number(studentId) },
+      select: { id: true, name: true, phone: true },
+    });
+
+    if (student) {
+      sendFeePaidWhatsAppNotification({
+        student,
+        payment,
+        mode: "cash",
+      }).catch((err) => {
+        console.error("WhatsApp fee-paid send failed (cash):", err.message);
+      });
+    }
 
     // 🔥 AUTO PROMOTION (ONLY IN FEBRUARY)
     if (isFebruary()) {

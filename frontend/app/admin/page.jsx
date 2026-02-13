@@ -13,6 +13,7 @@ import {
 import { Pie } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
 export default function AdminDashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,6 +23,15 @@ export default function AdminDashboard() {
   const [students, setStudents] = useState([]);
   const [monthlyFee, setMonthlyFee] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    {
+      role: "bot",
+      text: "Admin assistant ready. Use keyword prompts: 'paid id 3 march', 'reminder all', 'unpaid november', 'details id 3', 'update student id 3 phone 9876543210', 'fee 700', 'summary'.",
+    },
+  ]);
 
   // =========================
   // Date Filter State
@@ -42,7 +52,7 @@ export default function AdminDashboard() {
     }
 
     // Fetch students
-    fetch("http://localhost:5000/api/students", {
+    fetch(`${API_BASE}/api/students`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -56,7 +66,7 @@ export default function AdminDashboard() {
       .catch(err => console.error(err));
 
     // Fetch total revenue
-    fetch("http://localhost:5000/api/payments/revenue", {
+    fetch(`${API_BASE}/api/payments/revenue`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -149,7 +159,7 @@ export default function AdminDashboard() {
     if (!token) return alert("No token found. Please login.");
 
     try {
-      const res = await fetch("http://localhost:5000/api/settings/monthly-fee", {
+      const res = await fetch(`${API_BASE}/api/settings/monthly-fee`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -169,6 +179,49 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error(err);
       alert("Failed to update fee. Check console for error.");
+    }
+  };
+
+  const sendAdminPrompt = async () => {
+    const prompt = chatInput.trim();
+    if (!prompt || chatLoading) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    setChatMessages((prev) => [...prev, { role: "user", text: prompt }]);
+    setChatInput("");
+    setChatLoading(true);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/admin-assistant/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          role: "bot",
+          text: data?.message || "No response from assistant.",
+        },
+      ]);
+    } catch (err) {
+      setChatMessages((prev) => [
+        ...prev,
+        { role: "bot", text: "Assistant request failed. Please try again." },
+      ]);
+      console.error(err);
+    } finally {
+      setChatLoading(false);
     }
   };
  
@@ -320,6 +373,41 @@ export default function AdminDashboard() {
           </Link>
         ))}
       </div>
+
+      <button className="assistant-toggle" onClick={() => setChatOpen((v) => !v)}>
+        {chatOpen ? "Close Assistant" : "Admin Assistant"}
+      </button>
+
+      {chatOpen && (
+        <div className="assistant-panel">
+          <h3>Admin Chatbot</h3>
+          <div className="assistant-messages">
+            {chatMessages.map((message, index) => (
+              <div
+                key={`${message.role}-${index}`}
+                className={`assistant-msg ${message.role === "user" ? "assistant-user" : "assistant-bot"}`}
+              >
+                {message.text}
+              </div>
+            ))}
+          </div>
+
+          <div className="assistant-input-row">
+            <input
+              type="text"
+              value={chatInput}
+              placeholder="Type command for admin actions..."
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") sendAdminPrompt();
+              }}
+            />
+            <button onClick={sendAdminPrompt} disabled={chatLoading}>
+              {chatLoading ? "Sending..." : "Send"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

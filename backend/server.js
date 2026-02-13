@@ -9,7 +9,9 @@ import authRoutes from "./routes/authroute.js";
 import studentRoutes from "./routes/studentroute.js";
 import paymentRoutes from "./routes/paymentroute.js";
 import settingsRoutes from "./routes/settingsroute.js";
+import adminAssistantRoutes from "./routes/adminassistantroute.js";
 import { autoPromoteIfEligible } from "./controllers/studentcontrollers.js";
+import { runDailyFeeReminderJob } from "./services/reminderservice.js";
 
 // Load .env variables
 dotenv.config();
@@ -59,6 +61,20 @@ cron.schedule("0 0 1 3 *", async () => {
   }
 });
 
+// ================================
+// CRON JOB: Daily WhatsApp fee reminders
+// ================================
+cron.schedule(
+  process.env.REMINDER_CRON || "0 9 * * *",
+  async () => {
+    console.log("🔔 Running daily fee reminder job...");
+    await runDailyFeeReminderJob();
+  },
+  {
+    timezone: process.env.REMINDER_TIMEZONE || "Asia/Kolkata",
+  }
+);
+
 
 // ================================
 // Routes
@@ -66,6 +82,7 @@ cron.schedule("0 0 1 3 *", async () => {
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/admin-assistant", adminAssistantRoutes);
 
 
 // Health check

@@ -5,6 +5,7 @@ import "./student.css";
 import Nav from "../components/navbar/navbar.jsx";
 import jsPDF from "jspdf";
 
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
 export default function StudentDashboard() {
   const router = useRouter();
@@ -46,13 +47,13 @@ export default function StudentDashboard() {
 
     try {
       const [studentRes, paymentRes] = await Promise.all([
-        fetch("http://localhost:5000/api/students/me", {
+        fetch(`${API_BASE}/api/students/me`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }),
-        fetch("http://localhost:5000/api/payments/my", {
+        fetch(`${API_BASE}/api/payments/my`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

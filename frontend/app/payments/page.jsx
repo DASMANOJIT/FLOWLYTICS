@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import "./page.css";
 import Link from "next/link";
 
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
 export default function PaymentsPage() {
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
@@ -20,7 +22,7 @@ export default function PaymentsPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:5000/api/students", {
+    fetch(`${API_BASE}/api/students`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -36,7 +38,7 @@ export default function PaymentsPage() {
 
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:5000/api/payments/mark-paid", {
+    const res = await fetch(`${API_BASE}/api/payments/mark-paid`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

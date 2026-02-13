@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import "./page.css";
 
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
 export default function StudentSelfProfile() {
   const router = useRouter();
 
@@ -22,10 +24,10 @@ export default function StudentSelfProfile() {
     }
 
     Promise.all([
-      fetch("http://localhost:5000/api/students/me", {
+      fetch(`${API_BASE}/api/students/me`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      fetch("http://localhost:5000/api/payments/my", {
+      fetch(`${API_BASE}/api/payments/my`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
     ])

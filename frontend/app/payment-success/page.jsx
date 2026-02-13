@@ -1,20 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const transactionId = searchParams.get("txnid");
-
-  const [status, setStatus] = useState("Checking payment status...");
+  const [transactionId] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get("txnid");
+  });
+  const [status, setStatus] = useState(() =>
+    transactionId ? "Checking payment status..." : "Invalid payment reference."
+  );
 
   useEffect(() => {
-    if (!transactionId) {
-      setStatus("Invalid payment reference.");
-      return;
-    }
+    if (!transactionId) return;
 
     const token = localStorage.getItem("token");
     if (!token) {

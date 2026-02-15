@@ -1,222 +1,327 @@
-/* =======================
-   CONTAINER & HEADER
-======================= */
 .login-container {
-  min-height: 110vh;
+  min-height: 100vh;
   width: 100vw;
-  background:
-    radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 60%),
-    linear-gradient(135deg, #6fa7fd, #0058da);
+  padding: 24px 16px 36px;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 0px;
-  position: relative;
-  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.18), transparent 34%),
+    radial-gradient(circle at 82% 78%, rgba(255, 255, 255, 0.12), transparent 32%),
+    linear-gradient(135deg, #6fa7fd, #0058da);
 }
 
+.login-container::before,
+.login-container::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.login-container::before {
+  width: 440px;
+  height: 440px;
+  top: -170px;
+  left: -140px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 72%);
+}
+
+.login-container::after {
+  width: 520px;
+  height: 520px;
+  right: -220px;
+  bottom: -220px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 72%);
+}
+
+.login-header,
+.auth-shell {
+  position: relative;
+  z-index: 2;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 16px;
+  animation: riseFade 0.8s ease both;
+}
 
 .login-header h1 {
-  text-align: center;
-  color: white;
-  font-size: 34px;
-  margin-bottom: 40px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
+  margin: 0;
+  color: #f5f9ff;
+  font-size: clamp(30px, 4.4vw, 56px);
   font-family: "Poppins", sans-serif;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1.05;
+  text-shadow: 0 10px 28px rgba(2, 24, 73, 0.45);
 }
 
-/* =======================
-   CARD WRAPPER
-======================= */
+.login-subtitle {
+  margin: 12px 0 0;
+  font-size: 15px;
+  color: rgba(238, 245, 255, 0.92);
+  letter-spacing: 0.35px;
+}
+
+.auth-shell {
+  width: min(560px, calc(100vw - 22px));
+  border-radius: 24px;
+  padding: 14px;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.08)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 30px 70px rgba(1, 20, 64, 0.4);
+  backdrop-filter: blur(14px);
+  animation: riseFade 0.95s ease both;
+}
+
 .card-wrapper {
-  width: 360px;
-  perspective: 1300px;
-  position: relative;
-  transition: all 0.6s ease;
-}
-
-/* Increase height for signup card */
-.card-wrapper.signup {
-  height: 580px;
-}
-.card-wrapper.login,
-.card-wrapper.forgot {
-  height: 460px;
-}
-
-/* =======================
-   MODERN CARD
-======================= */
-.card-form {
   width: 100%;
+  position: relative;
+  perspective: 1500px;
+  transition: height 0.42s ease;
+}
+
+.card-wrapper.login {
+  height: 570px;
+}
+
+.card-wrapper.signup {
+  height: 930px;
+}
+
+.card-wrapper.forgot {
+  height: 570px;
+}
+
+.auth-switch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 6px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.switch-btn {
+  border: none;
+  border-radius: 11px;
+  padding: 11px 8px;
+  color: #eaf2ff;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.24s ease;
+}
+
+.switch-btn.active {
+  color: #fff;
+  background: linear-gradient(145deg, #2f80ed, #0058da);
+  box-shadow: 0 10px 18px rgba(0, 70, 185, 0.36);
+}
+
+.card-form {
   position: absolute;
-  padding: 34px;
+  top: 58px;
+  left: 0;
+  width: 100%;
   box-sizing: border-box;
   border-radius: 20px;
-
-  /* Glassmorphism effect */
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-
-  /* Depth & shadow */
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.30);
-
+  padding: 24px 20px;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1)),
+    rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 22px 40px rgba(0, 19, 58, 0.28);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  transition: transform 0.8s ease, opacity 0.5s ease, height 0.6s ease;
+  gap: 10px;
+  max-height: calc(100% - 62px);
+  overflow-y: auto;
+  transition: transform 0.75s ease, opacity 0.45s ease;
   backface-visibility: hidden;
 }
 
-/* =======================
-   FORM HEADINGS
-======================= */
-.card-form h2 {
-  text-align: center;
-  color: #ffffff;
-  font-size: 26px;
-  margin-bottom: 6px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
+.card-form::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* =======================
-   FORM INPUTS
-======================= */
+.card-form::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+}
+
+.card-form h2 {
+  margin: 0 0 8px;
+  color: #f8fbff;
+  text-align: center;
+  font-size: 34px;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+}
+
 .form-input {
-  padding: 14px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
   border-radius: 12px;
-  border: none;
-  font-size: 15.5px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.8);
+  color: #1f2937;
+  font-size: 15px;
   outline: none;
-  background: rgba(255, 255, 255, 0.75);
-  color: #2b2b2b;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 
 .form-input:focus {
-  background: rgba(255, 255, 255, 0.9);
-  transform: scale(1.03);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
+  border-color: #bfdbfe;
+  box-shadow: 0 0 0 3px rgba(191, 219, 254, 0.44);
+  transform: translateY(-1px);
 }
 
-/* =======================
-   MODERN BUTTONS
-======================= */
-.form-btn {
-  padding: 14px;
+.eye-btn {
+  width: fit-content;
+  align-self: flex-end;
   border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #0f172a;
+  font-size: 14px;
+  padding: 5px 10px;
+  margin-top: -4px;
+  cursor: pointer;
+}
+
+.form-btn {
+  width: 100%;
+  border: none;
+  border-radius: 13px;
+  padding: 12px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
   background: linear-gradient(145deg, #2f80ed, #0058da);
-  color: white;
-  border-radius: 14px;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.2s ease;
 }
 
-.form-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 10px 25px rgba(0, 85, 255, 0.4);
+.form-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px rgba(0, 78, 201, 0.42);
 }
 
-/* =======================
-   SWITCH LINKS
-======================= */
-.switch-link {
+.form-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.password-rules {
+  margin: 2px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #eef6ff;
   text-align: center;
-  margin-top: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.switch-link {
+  margin: 1px 0 0;
+  font-size: 14px;
+  text-align: center;
+  color: #ecf4ff;
   cursor: pointer;
-  color: #e6f2ff;
-  font-size: 15px;
+}
+
+.switch-link.soft {
   text-decoration: underline;
-  transition: all 0.2s;
 }
 
 .switch-link:hover {
-  color: #ffffff;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.45);
 }
 
-/* =======================
-   CARD STATES (FLIP)
-======================= */
 .card-wrapper.login .login-side {
   transform: rotateY(0deg);
   opacity: 1;
 }
+
 .card-wrapper.login .signup-side,
 .card-wrapper.login .forgot-side {
   transform: rotateY(180deg);
   opacity: 0;
+  pointer-events: none;
 }
 
 .card-wrapper.signup .signup-side {
   transform: rotateY(0deg);
   opacity: 1;
 }
+
 .card-wrapper.signup .login-side,
 .card-wrapper.signup .forgot-side {
   transform: rotateY(-180deg);
   opacity: 0;
+  pointer-events: none;
 }
 
 .card-wrapper.forgot .forgot-side {
   transform: rotateY(0deg);
   opacity: 1;
 }
+
 .card-wrapper.forgot .login-side,
 .card-wrapper.forgot .signup-side {
   transform: rotateY(180deg);
   opacity: 0;
+  pointer-events: none;
 }
 
-/* =======================
-   TOGGLE BUTTONS
-======================= */
-.form-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.toggle-btn {
-  padding: 10px 20px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  background: rgba(255,255,255,0.25);
-  color: #fff;
-  transition: all 0.3s ease;
-}
-
-.toggle-btn.active {
-  background: linear-gradient(145deg, #2f80ed, #0058da);
-  box-shadow: 0 6px 18px rgba(0, 85, 255, 0.35);
-}
-
-.toggle-btn:hover {
-  transform: scale(1.05);
-}
-
-/* =======================
-   RESPONSIVE
-======================= */
-@media (max-width: 420px) {
-  .card-wrapper {
-    width: 92%;
-    height: auto;
+@keyframes riseFade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-shell {
+    width: min(96vw, 460px);
+    padding: 10px;
+  }
+
+  .card-wrapper.signup {
+    height: 88vh;
+    min-height: 760px;
+  }
+
   .card-form {
-    height: auto;
-    padding: 26px;
+    padding: 18px 14px;
+  }
+
+  .card-form h2 {
+    font-size: 30px;
   }
 }

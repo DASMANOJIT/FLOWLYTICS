@@ -2,14 +2,37 @@
 import { useState } from "react";
 import "./login.css";
 import Fall from "../animation/fallingword.jsx";
-import bcrypt from "bcryptjs";
 
 export default function Login() {
   const [activeForm, setActiveForm] = useState("login");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [forgotOtpSent, setForgotOtpSent] = useState(false);
+  const [forgotGeneratedOtp, setForgotGeneratedOtp] = useState("");
+  const [forgotOtpInput, setForgotOtpInput] = useState("");
 
-  const API = "http://localhost:5000";
+  const [signupOtpSent, setSignupOtpSent] = useState(false);
+  const [signupGeneratedOtp, setSignupGeneratedOtp] = useState("");
+  const [signupOtpInput, setSignupOtpInput] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+  const [signupPhoneVerified, setSignupPhoneVerified] = useState(false);
+  const [signupPassword, setSignupPassword] = useState("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+
+  const API = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
+  const isStrongPassword = (password) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(
+      String(password || "")
+    );
+
+  const isValidPhone = (phone) => /^\+?\d{10,15}$/.test(String(phone || "").trim());
+  const passwordChecks = {
+    minLen: signupPassword.length >= 8,
+    upper: /[A-Z]/.test(signupPassword),
+    lower: /[a-z]/.test(signupPassword),
+    number: /\d/.test(signupPassword),
+    special: /[^A-Za-z0-9]/.test(signupPassword),
+  };
 
   // =====================
   // LOGIN
@@ -45,7 +68,33 @@ export default function Login() {
   };
 
   // =====================
-  // REGISTER  ✅ FIXED
+  // SIGNUP OTP (LOCAL NOW)
+  // =====================
+  const sendSignupOtp = () => {
+    if (!isValidPhone(signupPhone)) {
+      alert("Please enter a valid phone number before OTP.");
+      return;
+    }
+
+    const generated = Math.floor(100000 + Math.random() * 900000).toString();
+    setSignupGeneratedOtp(generated);
+    setSignupOtpSent(true);
+    setSignupPhoneVerified(false);
+    alert(`Signup OTP (local test): ${generated}`);
+  };
+
+  const verifySignupOtp = () => {
+    if (!signupOtpSent) return alert("Send OTP first.");
+    if (signupOtpInput.trim() !== signupGeneratedOtp) {
+      setSignupPhoneVerified(false);
+      return alert("Invalid OTP.");
+    }
+    setSignupPhoneVerified(true);
+    alert("Phone number verified.");
+  };
+
+  // =====================
+  // REGISTER (STUDENT ONLY)
   // =====================
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -56,12 +105,18 @@ export default function Login() {
     const password = e.target.password.value;
     const school = e.target.school.value;
     const studentClass = e.target.class.value;
-    const role = e.target.role.value;
+
+    if (!isStrongPassword(password)) {
+      return alert(
+        "Password must be 8+ chars with uppercase, lowercase, number, and special character."
+      );
+    }
+
+    if (!signupPhoneVerified) {
+      return alert("Please verify phone number with OTP before signing up.");
+    }
 
     try {
-      // ✅ MISSING LINE (ROOT FIX)
-      
-
       const res = await fetch(`${API}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -72,7 +127,7 @@ export default function Login() {
           password,
           school,
           class: studentClass,
-          role,
+          role: "student",
         }),
       });
 
@@ -80,6 +135,11 @@ export default function Login() {
       if (!res.ok) return alert(data.message);
 
       alert("Registered successfully!");
+      setSignupOtpSent(false);
+      setSignupGeneratedOtp("");
+      setSignupOtpInput("");
+      setSignupPhoneVerified(false);
+      setActiveForm("login");
     } catch (err) {
       alert("Cannot connect to backend!");
       console.error(err);
@@ -87,13 +147,13 @@ export default function Login() {
   };
 
   // =====================
-  // SEND OTP (LOCAL ONLY)
+  // FORGOT OTP (LOCAL ONLY)
   // =====================
-  const sendOTP = () => {
+  const sendForgotOtp = () => {
     const generated = Math.floor(100000 + Math.random() * 900000).toString();
-    setOtp(generated);
-    setOtpSent(true);
-    alert("Your OTP is: " + generated);
+    setForgotGeneratedOtp(generated);
+    setForgotOtpSent(true);
+    alert(`Reset OTP (local test): ${generated}`);
   };
 
   // =====================
@@ -103,20 +163,35 @@ export default function Login() {
     e.preventDefault();
 
     const email = e.target.email.value;
-    const phone = e.target.phone.value;
     const newPassword = e.target.newPassword.value;
+
+    if (!forgotOtpSent) {
+      return alert("Please send OTP first.");
+    }
+    if (forgotOtpInput.trim() !== forgotGeneratedOtp) {
+      return alert("Invalid OTP.");
+    }
+    if (!isStrongPassword(newPassword)) {
+      return alert(
+        "Password must be 8+ chars with uppercase, lowercase, number, and special character."
+      );
+    }
 
     try {
       const res = await fetch(`${API}/api/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone, newPassword }),
+        body: JSON.stringify({ email, newPassword }),
       });
 
       const data = await res.json();
       if (!res.ok) return alert(data.message);
 
       alert("Password reset successfully!");
+      setForgotOtpSent(false);
+      setForgotGeneratedOtp("");
+      setForgotOtpInput("");
+      setActiveForm("login");
     } catch (err) {
       alert("Cannot connect to backend!");
       console.error(err);
@@ -129,21 +204,61 @@ export default function Login() {
 
       <header className="login-header">
         <h1>
-          WELCOME TO THE <br /> SUBHO'S COMPUTER INSTITUTE
+          WELCOME TO THE <br /> SUBHO&apos;S COMPUTER INSTITUTE
         </h1>
+        <p className="login-subtitle">
+          Secure student access with a modern experience.
+        </p>
       </header>
 
+      <div className="auth-shell">
       <div className={`card-wrapper ${activeForm}`}>
+        <div className="auth-switch">
+          <button
+            type="button"
+            className={`switch-btn ${activeForm === "login" ? "active" : ""}`}
+            onClick={() => setActiveForm("login")}
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            className={`switch-btn ${activeForm === "signup" ? "active" : ""}`}
+            onClick={() => setActiveForm("signup")}
+          >
+            Sign Up
+          </button>
+          <button
+            type="button"
+            className={`switch-btn ${activeForm === "forgot" ? "active" : ""}`}
+            onClick={() => setActiveForm("forgot")}
+          >
+            Reset
+          </button>
+        </div>
+
         {/* LOGIN */}
         <form className="card-form login-side" onSubmit={handleLogin}>
           <h2>Login</h2>
           <input name="email" placeholder="Email" className="form-input" />
-          <input name="password" type="password" placeholder="Password" className="form-input" />
+          <input
+            name="password"
+            type={showLoginPassword ? "text" : "password"}
+            placeholder="Password"
+            className="form-input"
+          />
+          <button
+            type="button"
+            className="eye-btn"
+            onClick={() => setShowLoginPassword((v) => !v)}
+          >
+            {showLoginPassword ? "🙈" : "👁"}
+          </button>
           <button className="form-btn">Login</button>
-          <p className="switch-link" onClick={() => setActiveForm("forgot")}>
+          <p className="switch-link soft" onClick={() => setActiveForm("forgot")}>
             Forgot Password?
           </p>
-          <p className="switch-link" onClick={() => setActiveForm("signup")}>
+          <p className="switch-link soft" onClick={() => setActiveForm("signup")}>
             Create an Account
           </p>
         </form>
@@ -152,22 +267,67 @@ export default function Login() {
         <form className="card-form signup-side" onSubmit={handleRegister}>
           <h2>Sign Up</h2>
 
-
-
           <input name="name" placeholder="Full Name" className="form-input" />
           <input name="school" placeholder="School Name" className="form-input" />
           <input name="class" placeholder="Class" className="form-input" />
           <input name="email" placeholder="Email" className="form-input" />
-          <input name="phone" placeholder="Phone Number" className="form-input" />
-          <input name="password" type="password" placeholder="Password" className="form-input" />
+          <input
+            name="phone"
+            placeholder="Phone Number"
+            className="form-input"
+            value={signupPhone}
+            onChange={(e) => {
+              setSignupPhone(e.target.value);
+              setSignupPhoneVerified(false);
+            }}
+          />
+          <button type="button" className="form-btn" onClick={sendSignupOtp}>
+            Send OTP (Local)
+          </button>
+          {signupOtpSent && (
+            <>
+              <input
+                placeholder="Enter OTP"
+                className="form-input"
+                value={signupOtpInput}
+                onChange={(e) => setSignupOtpInput(e.target.value)}
+              />
+              <button type="button" className="form-btn" onClick={verifySignupOtp}>
+                Verify OTP
+              </button>
+            </>
+          )}
+          <p className="switch-link">
+            {signupPhoneVerified ? "Phone verified" : "Phone not verified"}
+          </p>
 
-          <select name="role" className="form-input">
-            <option value="student">Student</option>
-            <option value="admin">Admin</option>
-          </select>
+          <input
+            name="password"
+            type={showSignupPassword ? "text" : "password"}
+            placeholder="Password"
+            className="form-input"
+            value={signupPassword}
+            onChange={(e) => setSignupPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="eye-btn"
+            onClick={() => setShowSignupPassword((v) => !v)}
+          >
+            {showSignupPassword ? "🙈" : "👁"}
+          </button>
+          <p className="password-rules">
+            {passwordChecks.minLen ? "✓" : "•"} 8+ chars |{" "}
+            {passwordChecks.upper ? "✓" : "•"} uppercase |{" "}
+            {passwordChecks.lower ? "✓" : "•"} lowercase |{" "}
+            {passwordChecks.number ? "✓" : "•"} number |{" "}
+            {passwordChecks.special ? "✓" : "•"} special
+          </p>
 
-          <button className="form-btn">Sign Up</button>
-          <p className="switch-link" onClick={() => setActiveForm("login")}>
+          <button className="form-btn" disabled={!signupPhoneVerified || !isStrongPassword(signupPassword)}>
+            Sign Up
+          </button>
+          <p className="switch-link soft" onClick={() => setActiveForm("login")}>
             Already have an account?
           </p>
         </form>
@@ -175,28 +335,37 @@ export default function Login() {
         {/* FORGOT */}
         <form className="card-form forgot-side" onSubmit={handleResetPassword}>
           <h2>Reset Password</h2>
-          <input name="name" placeholder="Full Name" className="form-input" />
           <input name="email" placeholder="Email" className="form-input" />
-          <input name="phone" placeholder="Phone Number" className="form-input" />
 
-          {!otpSent && (
-            <button type="button" className="form-btn" onClick={sendOTP}>
+          {!forgotOtpSent && (
+            <button type="button" className="form-btn" onClick={sendForgotOtp}>
               Send OTP
             </button>
           )}
 
-          {otpSent && (
+          {forgotOtpSent && (
             <>
-              <input placeholder="Enter OTP" className="form-input" />
-              <input name="newPassword" type="password" placeholder="New Password" className="form-input" />
+              <input
+                placeholder="Enter OTP"
+                className="form-input"
+                value={forgotOtpInput}
+                onChange={(e) => setForgotOtpInput(e.target.value)}
+              />
+              <input
+                name="newPassword"
+                type="password"
+                placeholder="New Password"
+                className="form-input"
+              />
               <button className="form-btn">Reset Password</button>
             </>
           )}
 
-          <p className="switch-link" onClick={() => setActiveForm("login")}>
+          <p className="switch-link soft" onClick={() => setActiveForm("login")}>
             Back to Login
           </p>
         </form>
+      </div>
       </div>
     </div>
   );

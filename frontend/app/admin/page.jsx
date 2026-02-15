@@ -76,8 +76,15 @@ export default function AdminDashboard() {
   }, []);
   // Logout function
   const handleLogout = () => {
-    localStorage.removeItem("token"); // remove the token
-    window.location.href = "/login";  // redirect to login page
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch(`${API_BASE}/api/auth/logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {});
+    }
+    localStorage.removeItem("token");
+    window.location.href = "/login";
   };
 
   // =========================

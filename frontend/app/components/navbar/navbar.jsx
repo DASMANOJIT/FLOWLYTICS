@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import "./navbar.css";
 
+const API = "http://localhost:5000";
+
 export default function StudentNavbar() {
   const [studentName, setStudentName] = useState(""); // dynamic
   const [open, setOpen] = useState(false);
@@ -29,8 +31,15 @@ export default function StudentNavbar() {
   // Logout function
   // ========================
   const handleLogout = () => {
-    localStorage.removeItem("token"); // remove token
-    window.location.href = "/login";   // redirect
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch(`${API}/api/auth/logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {});
+    }
+    localStorage.removeItem("token");
+    window.location.href = "/login";
   };
 
   return (

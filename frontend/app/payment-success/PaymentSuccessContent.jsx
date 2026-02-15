@@ -28,7 +28,7 @@ export default function PaymentSuccessContent() {
     const checkStatus = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/payments/phonepe/status/${transactionId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/payments/phonepe/status/${transactionId}`,
           {
             headers: {
               "Content-Type": "application/json",

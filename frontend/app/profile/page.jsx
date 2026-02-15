@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import "./page.css";
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
 
 export default function StudentSelfProfile() {
   const router = useRouter();

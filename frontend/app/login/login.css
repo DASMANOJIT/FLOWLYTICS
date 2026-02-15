@@ -193,16 +193,29 @@
   transform: translateY(-1px);
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field .form-input {
+  padding-right: 46px;
+}
+
 .eye-btn {
-  width: fit-content;
-  align-self: flex-end;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
   border: none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.78);
-  color: #0f172a;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #1e293b;
   font-size: 14px;
-  padding: 5px 10px;
-  margin-top: -4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 

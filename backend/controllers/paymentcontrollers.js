@@ -1,5 +1,5 @@
 import prisma from "../prisma/client.js";
-import { getAcademicYear, isFebruary } from "../utils/academicYear.js";
+import { getAcademicYear } from "../utils/academicYear.js";
 import { autoPromoteIfEligible } from "./studentcontrollers.js";
 import { sendFeePaidWhatsAppNotification } from "../services/whatsappservice.js";
 /**
@@ -175,10 +175,8 @@ export const markPaid = async (req, res) => {
       });
     }
 
-    // 🔥 AUTO PROMOTION (ONLY IN FEBRUARY)
-    if (isFebruary()) {
-      await autoPromoteIfEligible(Number(studentId));
-    }
+    // Promote immediately when all 12 months of this academic year are paid.
+    await autoPromoteIfEligible(Number(studentId), academicYear);
 
     res.json({
       message: "Payment marked successfully",

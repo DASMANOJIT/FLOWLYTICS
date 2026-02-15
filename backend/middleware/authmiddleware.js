@@ -1,8 +1,6 @@
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import {
-  addSession,
-  getActiveSessionCount,
   isSessionActive,
 } from "../utils/sessionStore.js";
 
@@ -39,13 +37,9 @@ export const protect = async (req, res, next) => {
     }
 
     if (!isSessionActive(decoded.role, decoded.id, token)) {
-      const activeCount = getActiveSessionCount(decoded.role, decoded.id);
-      if (activeCount >= 2) {
-        return res.status(401).json({ message: "Session expired or logged out" });
-      }
-
-      const expMs = decoded?.exp ? decoded.exp * 1000 : Date.now() + 7 * 86400000;
-      addSession(decoded.role, decoded.id, token, expMs);
+      return res
+        .status(401)
+        .json({ message: "Session expired or logged out. Please login again." });
     }
 
     // Attach user to request

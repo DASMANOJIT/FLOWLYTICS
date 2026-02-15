@@ -84,6 +84,8 @@ export default function AdminDashboard() {
       }).catch(() => {});
     }
     localStorage.removeItem("token");
+    localStorage.removeItem("studentName");
+    alert("You are logged out from this device. Please login again.");
     window.location.href = "/login";
   };
 

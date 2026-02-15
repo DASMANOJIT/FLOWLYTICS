@@ -51,9 +51,10 @@ ensureAppSettings();
 cron.schedule("0 0 1 3 *", async () => {
   console.log("🔔 Running annual promotion check...");
   try {
+    const targetAcademicYear = new Date().getFullYear() - 1;
     const students = await prisma.student.findMany();
     for (const s of students) {
-      await autoPromoteIfEligible(s.id);
+      await autoPromoteIfEligible(s.id, targetAcademicYear);
     }
     console.log("✅ Promotion check completed.");
   } catch (err) {

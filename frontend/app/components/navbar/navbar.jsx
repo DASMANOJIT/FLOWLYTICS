@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import "./navbar.css";
 
-const API = "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
 export default function StudentNavbar() {
   const [studentName, setStudentName] = useState(""); // dynamic
@@ -17,7 +17,7 @@ export default function StudentNavbar() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    fetch("http://localhost:5000/api/students/me", {
+    fetch(`${API}/api/students/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -39,6 +39,8 @@ export default function StudentNavbar() {
       }).catch(() => {});
     }
     localStorage.removeItem("token");
+    localStorage.removeItem("studentName");
+    alert("You are logged out from this device. Please login again.");
     window.location.href = "/login";
   };
 

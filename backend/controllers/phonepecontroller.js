@@ -2,6 +2,7 @@ import prisma from "../prisma/client.js";
 import { phonepeConfig, generateChecksum } from "../config/phonepe.config.js";
 import { getAcademicYear } from "../utils/academicYear.js";
 import { sendFeePaidWhatsAppNotification } from "../services/whatsappservice.js";
+import { autoPromoteIfEligible } from "./studentcontrollers.js";
 
 export const initiatePhonePePayment = async (req, res) => {
   try {
@@ -153,6 +154,8 @@ export const phonePeCallback = async (req, res) => {
       });
 
       if (payment.status !== "paid") {
+        await autoPromoteIfEligible(Number(payment.studentId), payment.academicYear);
+
         const student = await prisma.student.findUnique({
           where: { id: Number(payment.studentId) },
           select: { id: true, name: true, phone: true },

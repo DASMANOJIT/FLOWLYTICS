@@ -17,6 +17,7 @@ export default function Login() {
   const [signupPassword, setSignupPassword] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
 
   const API = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
@@ -241,26 +242,24 @@ export default function Login() {
         <form className="card-form login-side" onSubmit={handleLogin}>
           <h2>Login</h2>
           <input name="email" placeholder="Email" className="form-input" />
-          <input
-            name="password"
-            type={showLoginPassword ? "text" : "password"}
-            placeholder="Password"
-            className="form-input"
-          />
-          <button
-            type="button"
-            className="eye-btn"
-            onClick={() => setShowLoginPassword((v) => !v)}
-          >
-            {showLoginPassword ? "🙈" : "👁"}
-          </button>
+          <div className="password-field">
+            <input
+              name="password"
+              type={showLoginPassword ? "text" : "password"}
+              placeholder="Password"
+              className="form-input"
+            />
+            <button
+              type="button"
+              className="eye-btn"
+              onClick={() => setShowLoginPassword((v) => !v)}
+              aria-label={showLoginPassword ? "Hide password" : "Show password"}
+            >
+              {showLoginPassword ? "🙈" : "👁"}
+            </button>
+          </div>
           <button className="form-btn">Login</button>
-          <p className="switch-link soft" onClick={() => setActiveForm("forgot")}>
-            Forgot Password?
-          </p>
-          <p className="switch-link soft" onClick={() => setActiveForm("signup")}>
-            Create an Account
-          </p>
+          
         </form>
 
         {/* SIGNUP */}
@@ -301,21 +300,24 @@ export default function Login() {
             {signupPhoneVerified ? "Phone verified" : "Phone not verified"}
           </p>
 
-          <input
-            name="password"
-            type={showSignupPassword ? "text" : "password"}
-            placeholder="Password"
-            className="form-input"
-            value={signupPassword}
-            onChange={(e) => setSignupPassword(e.target.value)}
-          />
-          <button
-            type="button"
-            className="eye-btn"
-            onClick={() => setShowSignupPassword((v) => !v)}
-          >
-            {showSignupPassword ? "🙈" : "👁"}
-          </button>
+          <div className="password-field">
+            <input
+              name="password"
+              type={showSignupPassword ? "text" : "password"}
+              placeholder="Password"
+              className="form-input"
+              value={signupPassword}
+              onChange={(e) => setSignupPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="eye-btn"
+              onClick={() => setShowSignupPassword((v) => !v)}
+              aria-label={showSignupPassword ? "Hide password" : "Show password"}
+            >
+              {showSignupPassword ? "🙈" : "👁"}
+            </button>
+          </div>
           <p className="password-rules">
             {passwordChecks.minLen ? "✓" : "•"} 8+ chars |{" "}
             {passwordChecks.upper ? "✓" : "•"} uppercase |{" "}
@@ -351,19 +353,27 @@ export default function Login() {
                 value={forgotOtpInput}
                 onChange={(e) => setForgotOtpInput(e.target.value)}
               />
-              <input
-                name="newPassword"
-                type="password"
-                placeholder="New Password"
-                className="form-input"
-              />
+              <div className="password-field">
+                <input
+                  name="newPassword"
+                  type={showResetPassword ? "text" : "password"}
+                  placeholder="New Password"
+                  className="form-input"
+                />
+                <button
+                  type="button"
+                  className="eye-btn"
+                  onClick={() => setShowResetPassword((v) => !v)}
+                  aria-label={showResetPassword ? "Hide password" : "Show password"}
+                >
+                  {showResetPassword ? "🙈" : "👁"}
+                </button>
+              </div>
               <button className="form-btn">Reset Password</button>
             </>
           )}
 
-          <p className="switch-link soft" onClick={() => setActiveForm("login")}>
-            Back to Login
-          </p>
+          
         </form>
       </div>
       </div>

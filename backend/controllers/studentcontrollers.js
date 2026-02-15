@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import { getAcademicYear, isFebruary } from "../utils/academicYear.js";
+import { getAcademicYear } from "../utils/academicYear.js";
 
 const prisma = new PrismaClient();
 
@@ -20,11 +20,19 @@ export const getStudents = async (req, res) => {
       orderBy: { name: "asc" },
     });
 
+    const currentAcademicYear = getAcademicYear();
+    const currentMonth = new Date().toLocaleString("en-US", { month: "long" });
+
     const enriched = students.map((s) => {
-      const hasPaid = s.payments.some((p) => p.status === "paid");
+      const hasPaidCurrentMonth = s.payments.some(
+        (p) =>
+          p.status === "paid" &&
+          p.academicYear === currentAcademicYear &&
+          p.month === currentMonth
+      );
       return {
         ...s,
-        feesStatus: hasPaid ? "paid" : "unpaid",
+        feesStatus: hasPaidCurrentMonth ? "paid" : "unpaid",
       };
     });
 
@@ -113,10 +121,11 @@ export const deleteStudent = async (req, res) => {
 // =======================
 // AUTO PROMOTION (INTERNAL USE)
 // =======================
-export const autoPromoteIfEligible = async (studentId) => {
-  if (!isFebruary()) return;
-
-  const academicYear = getAcademicYear();
+export const autoPromoteIfEligible = async (
+  studentId,
+  targetAcademicYear = getAcademicYear()
+) => {
+  const academicYear = Number(targetAcademicYear);
 
   const student = await prisma.student.findUnique({
     where: { id: studentId },

@@ -5,7 +5,7 @@ import "./student.css";
 import Nav from "../components/navbar/navbar.jsx";
 import jsPDF from "jspdf";
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
 
 export default function StudentDashboard() {
   const router = useRouter();

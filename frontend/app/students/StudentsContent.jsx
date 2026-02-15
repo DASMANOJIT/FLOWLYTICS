@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import "./students.css";
-
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
 export default function StudentsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -39,7 +39,7 @@ export default function StudentsPage() {
       return;
     }
 
-    fetch("http://localhost:5000/api/students", {
+    fetch("API_BASE/api/students", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

@@ -19,7 +19,7 @@ export default function Login() {
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
 
-  const API = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  const API = process.env.NEXT_PUBLIC_BACKEND_URL ;
 
   const isStrongPassword = (password) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(

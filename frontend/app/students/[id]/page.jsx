@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import "./stu.css";
-
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
 export default function StudentProfile() {
   const { id } = useParams();
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function StudentProfile() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        `http://localhost:5000/api/students/${id}`,
+        ` API_BASE/api/students/${id}`,
         {
           method: "DELETE",
           headers: {

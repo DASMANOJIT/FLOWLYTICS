@@ -33,7 +33,7 @@ export default function PayPage() {
         }
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/students/me`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/students/me`,
           {
             headers: {
               "Content-Type": "application/json",

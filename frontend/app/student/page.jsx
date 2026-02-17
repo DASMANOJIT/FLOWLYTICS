@@ -222,7 +222,85 @@ export default function StudentDashboard() {
   return (
     <div className="dashboard-wrapper">
       <Nav />
-      {/* Rest of your UI remains EXACTLY the same */}
+
+      <div className="student-header">
+        <h1 className="student-name">____________</h1>
+        <h1 className="student-name">____________</h1>
+        <p className="student-subtitle">Student Dashboard</p>
+      </div>
+<div className="dashboard-top">
+      <div className="total-fees-container">
+        <h2 className="total-title">Total Monthly Fees</h2>
+        <p className="total-amount">₹{totalMonthlyFees}</p>
+       
+
+      </div>
+ 
+ 
+
+</div>
+
+      <div className="progress-section">
+        <p className="progress-label">
+          Fees Paid: {paidCount}/{months.length}
+        </p>
+        <div className="progress-bar">
+          <div
+            className="progress-fill"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+      </div>
+
+      <h3 className="section-heading">Monthly Fee Details</h3>
+
+      <div className="month-list">
+        {months.map((month) => {
+          const isPaid = payments.some(
+            (p) => p.month === month && p.status === "paid"
+          );
+
+          return (
+            <div key={month} className="month-card">
+              <div className="month-info">
+                <p className="month-name">{month}</p>
+                <p className="month-fee">₹{totalMonthlyFees}</p>
+              </div>
+
+              {isPaid ? (
+                <button
+                  className="receipt-button"
+                  onClick={() => downloadReceiptPDF(month)}
+                >
+                  Download PDF Receipt
+                </button>
+              ) : (
+                <button
+                  className="pay-button"
+                  onClick={() => handlePay(month)}
+                >
+                  Pay Now
+                </button>
+
+
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="upcoming-container">
+        <h3 className="upcoming-title">Upcoming Fee</h3>
+        <div className="upcoming-content">
+          <div>
+            <p className="upcoming-month">{upcomingMonth.month}</p>
+            <p className="upcoming-amount">₹{upcomingMonth.amount}</p>
+          </div>
+          <span className="due-label">
+            {upcomingMonth.month === "All Paid" ? "✔ No Dues" : "Due Soon"}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

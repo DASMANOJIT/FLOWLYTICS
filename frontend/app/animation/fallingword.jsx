@@ -3,24 +3,29 @@
 import { useEffect, useState } from "react";
 import "./fallingword.css";
 
+const wordList = [
+  "Learn","Code","Develop","Design","Create","Innovate",
+  "Build","Explore","Inspire","Achieve","Grow","Collaborate",
+  "Imagine","Transform","Empower","Discover","Lead","Succeed"
+];
+
+const generateWords = () =>
+  wordList.map((word) => ({
+    word,
+    left: `${Math.random() * 100}%`,
+    duration: `${10 + Math.random() * 10}s`,
+    delay: `${Math.random() * 5}s`,
+  }));
+
 export default function FallingWords() {
   const [words, setWords] = useState([]);
 
   useEffect(() => {
-    const wordList = [
-      "Learn","Code","Develop","Design","Create","Innovate",
-      "Build","Explore","Inspire","Achieve","Grow","Collaborate",
-      "Imagine","Transform","Empower","Discover","Lead","Succeed"
-    ];
+    const id = setTimeout(() => {
+      setWords(generateWords());
+    }, 0);
 
-    const generated = wordList.map((word) => ({
-      word,
-      left: `${Math.random() * 100}%`,
-      duration: `${10 + Math.random() * 10}s`,
-      delay: `${Math.random() * 5}s`,
-    }));
-
-    setWords(generated);
+    return () => clearTimeout(id);
   }, []);
 
   return (

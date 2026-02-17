@@ -4,32 +4,27 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import "./students.css";
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 export default function StudentsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [students, setStudents] = useState([]);
-  const [search, setSearch] = useState("");
-
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [classFilter, setClassFilter] = useState("all");
-  const [schoolFilter, setSchoolFilter] = useState("all");
-  const [sortOrder, setSortOrder] = useState("none");
-
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-
-  // 🔹 Restore filters FROM URL
-  useEffect(() => {
-    setSearch(searchParams.get("search") || "");
-    setStatusFilter(searchParams.get("status") || "all");
-    setClassFilter(searchParams.get("class") || "all");
-    setSchoolFilter(searchParams.get("school") || "all");
-    setSortOrder(searchParams.get("sort") || "none");
-    setFromDate(searchParams.get("from") || "");
-    setToDate(searchParams.get("to") || "");
-  }, []);
+  const [search, setSearch] = useState(() => searchParams.get("search") || "");
+  const [statusFilter, setStatusFilter] = useState(
+    () => searchParams.get("status") || "all"
+  );
+  const [classFilter, setClassFilter] = useState(
+    () => searchParams.get("class") || "all"
+  );
+  const [schoolFilter, setSchoolFilter] = useState(
+    () => searchParams.get("school") || "all"
+  );
+  const [sortOrder, setSortOrder] = useState(
+    () => searchParams.get("sort") || "none"
+  );
+  const [fromDate, setFromDate] = useState(() => searchParams.get("from") || "");
+  const [toDate, setToDate] = useState(() => searchParams.get("to") || "");
 
   // 🔹 Fetch students
   useEffect(() => {
@@ -39,7 +34,7 @@ export default function StudentsPage() {
       return;
     }
 
-    fetch("API_BASE/api/students", {
+    fetch(`${API_BASE}/api/students`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -64,7 +59,7 @@ export default function StudentsPage() {
     if (toDate) params.set("to", toDate);
 
     router.replace(`/students?${params.toString()}`, { scroll: false });
-  }, [search, statusFilter, classFilter, schoolFilter, sortOrder, fromDate, toDate]);
+  }, [search, statusFilter, classFilter, schoolFilter, sortOrder, fromDate, toDate, router]);
 
   // 🔹 CLEAR ALL FILTERS
   const clearAllFilters = () => {

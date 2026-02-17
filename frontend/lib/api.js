@@ -1,5 +1,6 @@
 import axios from "axios";
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_API_URL || `${BACKEND_URL}/api`;
 
 
 export const loginApi = (email, password) =>
@@ -13,7 +14,7 @@ export const deleteStudent = (id) => axios.delete(`${API}/students/${id}`).then(
 
 export const createOrder = (data) => axios.post(`${API}/payments/create-order`, data).then((r) => r.data);
 export const verifyPayment = (data) => axios.post(`${API}/payments/verify`, data).then((r) => r.data);
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = API;
 
 export async function apiCall(endpoint, method = "GET", body = null, token = null) {
   const headers = { "Content-Type": "application/json" };

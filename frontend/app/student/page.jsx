@@ -5,7 +5,7 @@ import "./student.css";
 import Nav from "../components/navbar/navbar.jsx";
 import jsPDF from "jspdf";
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
 export default function StudentDashboard() {
   const router = useRouter();
@@ -13,22 +13,20 @@ export default function StudentDashboard() {
   const [student, setStudent] = useState(null);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false); // ✅ added
 
-  const [totalMonthlyFees, setTotalMonthlyFees] = useState(0);
-
-  // ✅ Ensure component is mounted before accessing localStorage
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  const [totalMonthlyFees, setTotalMonthlyFees] = useState(0); // <-- dynamic fee
   const handlePay = (month) => {
-    if (!student) return;
+  if (!student) {
+    console.error("Student not loaded yet", student);
+    return;
+  }
 
-    router.push(
-      `/pay/${student.id}?month=${month}&amount=${student.monthlyFee}`
-    );
-  };
+  router.push(
+  `/pay/${student.id}?month=${month}&amount=${student.monthlyFee}`
+);
+
+};
+
 
   const months = [
     "March", "April", "May", "June", "July", "August",
@@ -40,56 +38,49 @@ export default function StudentDashboard() {
   // FETCH STUDENT + PAYMENTS
   // ===============================
   useEffect(() => {
-    if (!mounted) return; // ✅ important fix
+  const fetchData = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/login");
-        return;
-      }
+    try {
+      const [studentRes, paymentRes] = await Promise.all([
+        fetch(`${API_BASE}/api/students/me`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        fetch(`${API_BASE}/api/payments/my`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+      ]);
 
-      try {
-        const [studentRes, paymentRes] = await Promise.all([
-          fetch(`${API_BASE}/api/students/me`, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          fetch(`${API_BASE}/api/payments/my`, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-        ]);
+      if (!studentRes.ok) throw new Error("Failed to fetch student");
+      if (!paymentRes.ok) throw new Error("Failed to fetch payments");
 
-        // ✅ Only logout if actually unauthorized
-        if (studentRes.status === 401 || paymentRes.status === 401) {
-          localStorage.removeItem("token");
-          router.push("/login");
-          return;
-        }
+      const studentData = await studentRes.json();
+      setStudent(studentData);
+      setTotalMonthlyFees(studentData.monthlyFee || 0);
 
-        if (!studentRes.ok) throw new Error("Failed to fetch student");
-        if (!paymentRes.ok) throw new Error("Failed to fetch payments");
+      const paymentData = await paymentRes.json();
+      setPayments(paymentData);
+    } catch (err) {
+      console.error("Fetch error:", err);
+      localStorage.removeItem("token");
+      router.push("/login");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const studentData = await studentRes.json();
-        setStudent(studentData);
-        setTotalMonthlyFees(studentData.monthlyFee || 0);
-
-        const paymentData = await paymentRes.json();
-        setPayments(paymentData);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [router, mounted]);
+  fetchData();
+}, [router]);
 
   // ===============================
   // CALCULATIONS
@@ -100,52 +91,75 @@ export default function StudentDashboard() {
 
   const progressPercent = (paidCount / months.length) * 100;
 
+  // ===============================
+  // UPCOMING FEE LOGIC (NO UI CHANGE)
+  // ===============================
   const paidMonthsSet = new Set(
     payments.filter(p => p.status === "paid").map(p => p.month)
   );
 
+  // All unpaid months in academic order
   const unpaidMonths = months.filter(month => !paidMonthsSet.has(month));
 
+  // Get current academic month (March → February)
   const now = new Date();
-  const jsMonthIndex = now.getMonth();
+  const jsMonthIndex = now.getMonth(); // 0 = Jan
   const academicMonthIndex = jsMonthIndex >= 2 ? jsMonthIndex - 2 : jsMonthIndex + 10;
   const currentAcademicMonth = months[academicMonthIndex];
 
+  // Priority logic
   let upcomingMonth = { month: "All Paid", amount: 0 };
 
+  // 1️⃣ Backlog first
   if (unpaidMonths.length > 0) {
     upcomingMonth = {
       month: unpaidMonths[0],
       amount: totalMonthlyFees,
     };
-  } else if (!paidMonthsSet.has(currentAcademicMonth)) {
+  }
+  // 2️⃣ Else current month if unpaid
+  else if (!paidMonthsSet.has(currentAcademicMonth)) {
     upcomingMonth = {
       month: currentAcademicMonth,
       amount: totalMonthlyFees,
     };
   }
 
+
+
+
   // ===============================
-  // PDF RECEIPT (UNCHANGED)
+  // MODERN PDF RECEIPT
+  // ===============================
+  // ===============================
+  // MODERN & PROFESSIONAL PDF RECEIPT
   // ===============================
   const downloadReceiptPDF = (month) => {
     const doc = new jsPDF("p", "mm", "a4");
+
+    // ---------- COLORS ----------
     const textDark = [40, 40, 40];
     const grayBg = [246, 247, 249];
+
+    // ---------- PAGE SIZE ----------
     const pageWidth = 210;
 
+    // ---------- HEADER (LINEAR GRADIENT SIMULATION) ----------
     const headerHeight = 45;
-    const startColor = { r: 255, g: 49, b: 49 };
-    const endColor = { r: 255, g: 145, b: 77 };
+    const startColor = { r: 255, g: 49, b: 49 };   // #ff3131
+    const endColor = { r: 255, g: 145, b: 77 };  // #ff914d
 
     for (let i = 0; i < headerHeight; i++) {
       const r = Math.round(startColor.r + ((endColor.r - startColor.r) * i) / headerHeight);
       const g = Math.round(startColor.g + ((endColor.g - startColor.g) * i) / headerHeight);
       const b = Math.round(startColor.b + ((endColor.b - startColor.b) * i) / headerHeight);
+
       doc.setFillColor(r, g, b);
       doc.rect(0, i, pageWidth, 1, "F");
     }
 
+
+    // ---------- LOGO (CENTERED) ----------
     const img = new Image();
     img.src = "/logo.png";
 
@@ -153,15 +167,19 @@ export default function StudentDashboard() {
       const logoSize = 28;
       const logoX = (pageWidth - logoSize) / 2;
       const logoY = 8;
+
       doc.addImage(img, "PNG", logoX, logoY, logoSize, logoSize);
 
+      // ---------- TITLE ----------
       doc.setFontSize(12);
       doc.setTextColor(255, 255, 255);
       doc.text("Payment Receipt", pageWidth / 2, 42, { align: "center" });
 
+      // ---------- RECEIPT CARD ----------
       doc.setFillColor(...grayBg);
       doc.roundedRect(15, 55, 180, 120, 6, 6, "F");
 
+      // ---------- CARD TITLE ----------
       doc.setTextColor(...textDark);
       doc.setFontSize(15);
       doc.text("Receipt Details", pageWidth / 2, 72, { align: "center" });
@@ -169,6 +187,7 @@ export default function StudentDashboard() {
       doc.setLineWidth(0.5);
       doc.line(60, 76, 150, 76);
 
+      // ---------- DETAILS ----------
       doc.setFontSize(11);
       const leftX = 32;
       const rightX = 120;
@@ -191,11 +210,13 @@ export default function StudentDashboard() {
 
       y += 14;
       doc.text("Payment Status", leftX, y);
-      doc.setTextColor(34, 197, 94);
+      doc.setTextColor(34, 197, 94); // modern green
       doc.text("PAID", rightX, y);
 
+      // Reset text color
       doc.setTextColor(...textDark);
 
+      // ---------- FOOTER ----------
       doc.setFontSize(9);
       doc.setTextColor(120);
 
@@ -213,11 +234,15 @@ export default function StudentDashboard() {
         { align: "center" }
       );
 
+      // ---------- SAVE ----------
       doc.save(`${student?.name || "student"}_${month}_receipt.pdf`);
     };
   };
 
-  if (!mounted || loading) return <p>Loading...</p>;
+
+
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="dashboard-wrapper">

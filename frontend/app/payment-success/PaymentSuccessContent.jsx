@@ -7,12 +7,14 @@ export default function PaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const transactionId = searchParams.get("txnid");
+  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
-  const [status, setStatus] = useState("Checking payment status...");
+  const [status, setStatus] = useState(
+    transactionId ? "Checking payment status..." : "Invalid payment reference."
+  );
 
   useEffect(() => {
     if (!transactionId) {
-      setStatus("Invalid payment reference.");
       return;
     }
 
@@ -28,7 +30,7 @@ export default function PaymentSuccessContent() {
     const checkStatus = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/payments/phonepe/status/${transactionId}`,
+          `${apiBase}/api/payments/phonepe/status/${transactionId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -68,7 +70,7 @@ export default function PaymentSuccessContent() {
     };
 
     checkStatus();
-  }, [router, transactionId]);
+  }, [apiBase, router, transactionId]);
 
   return (
     <div style={{ maxWidth: 700, margin: "80px auto", textAlign: "center", padding: 20 }}>
@@ -78,4 +80,3 @@ export default function PaymentSuccessContent() {
     </div>
   );
 }
-

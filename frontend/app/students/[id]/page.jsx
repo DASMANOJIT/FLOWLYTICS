@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import "./stu.css";
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
+
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+
 export default function StudentProfile() {
   const { id } = useParams();
   const router = useRouter();
@@ -13,7 +15,7 @@ export default function StudentProfile() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:5000/api/students/${id}`, {
+    fetch(`${API_BASE}/api/students/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -33,7 +35,7 @@ export default function StudentProfile() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        ` API_BASE/api/students/${id}`,
+        `${API_BASE}/api/students/${id}`,
         {
           method: "DELETE",
           headers: {

@@ -18,9 +18,22 @@ dotenv.config();
 
 // Initialize app
 const app = express();
+const corsOrigins = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors(
+    corsOrigins.length
+      ? {
+          origin: corsOrigins,
+          credentials: true,
+        }
+      : undefined
+  )
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/payments", paymentRoutes);
